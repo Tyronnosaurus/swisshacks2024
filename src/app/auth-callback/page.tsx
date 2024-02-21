@@ -1,5 +1,7 @@
 "use client"
 
+/* If the user visits the dashboard, a quick check is made to see if he's logged in */
+
 import { useRouter, useSearchParams } from 'next/navigation'
 import { trpc } from '../_trpc/client'
 import { Loader2 } from 'lucide-react'
@@ -7,8 +9,8 @@ import { Loader2 } from 'lucide-react'
 const Page = () => {
 
     const router = useRouter()
-
-    // Parse the url to get the value in "?origin=xxx"
+    
+    // Parse the url to get the xxx value in "?origin=xxx", if there is one
     const searchParams = useSearchParams()
     const origin = searchParams.get('origin')
 
@@ -16,15 +18,12 @@ const Page = () => {
         undefined,
         {
             onSuccess: ({success}) => {
-                if (success) {
-                    // User is synced to database
-                    router.push(origin ? `/${origin}` : '/dashboard')
-                }
+                // If user is synced to database, return to previous page (origin). If there's no origin, go to dashboard page
+                if (success) router.push(origin ? `/${origin}` : '/dashboard')
             },
             onError: (err) => {
-                if (err.data?.code === "UNAUTHORIZED") {
-                    router.push("/sign-in")
-                }
+                // Otherwise, go to sign in page
+                if (err.data?.code === "UNAUTHORIZED") router.push("/sign-in")
             },
             retry: true,
             retryDelay: 2000,

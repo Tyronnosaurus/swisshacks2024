@@ -5,6 +5,7 @@ import React from 'react'
 
 const Page = async () => {
 
+   // If user is not logged in, redirect to auth-callback page
   const { getUser } = getKindeServerSession()
   const user = await getUser()
 

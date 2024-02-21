@@ -7,10 +7,16 @@ import { db } from '@/db';
 // mutations are for POST, UPDATE... requests
 
 export const appRouter = router({
+
+  // Public procedure to synchronize user auth service with database.
+  // If a user is logged in but not in the database, add them to the database. 
   authCallback: publicProcedure.query(async() => {
-    const {getUser} = getKindeServerSession()
+
+    // Get current logged in user
+    const { getUser } = getKindeServerSession()
     const user = getUser()
 
+    // Throw error if no user is logged in
     if (!user.id || !user.email) throw new TRPCError({code: "UNAUTHORIZED"})
 
     // Check if the user that is logged in is also in the database
@@ -20,8 +26,8 @@ export const appRouter = router({
       }
     })
 
+    // If not, create user in db
     if (!dbUser) {
-      // Create user in db
       await db.user.create({
         data: {
           id: user.id,
@@ -34,6 +40,5 @@ export const appRouter = router({
   })
 });
  
-// Export type router type signature,
-// NOT the router itself.
+// Export router type signature, NOT the router itself.
 export type AppRouter = typeof appRouter;
