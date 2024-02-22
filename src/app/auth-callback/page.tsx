@@ -25,8 +25,8 @@ const Page = () => {
                 // Otherwise, go to sign in page
                 if (err.data?.code === "UNAUTHORIZED") router.push("/sign-in")
             },
-            retry: true,
-            retryDelay: 2000,
+            retry: 5,
+            retryDelay: 1000,
         }
     )
 
