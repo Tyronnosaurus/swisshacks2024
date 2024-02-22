@@ -2,6 +2,7 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { privateProcedure, publicProcedure, router } from './trpc';
 import { TRPCError } from '@trpc/server';
 import { db } from '@/db';
+import { z } from 'zod'
  
 // queries are for GET requests
 // mutations are for POST, UPDATE... requests
@@ -10,7 +11,7 @@ export const appRouter = router({
 
   // Public procedure to synchronize user auth service with database.
   // If a user is logged in but not in the database, add them to the database. 
-  authCallback: publicProcedure.query(async() => {
+  authCallback: publicProcedure.query(async () => {
 
     // Get current logged in user
     const { getUser } = getKindeServerSession()
@@ -48,6 +49,24 @@ export const appRouter = router({
         userId
       }
     })
+  }),
+
+  deleteFile: privateProcedure.input(
+      z.object({ id: z.string() })
+    ).mutation(async ({ctx, input}) => {
+    const {userId} = ctx
+
+    // Find file in db by its id (and make sure it belongs to the logged in user)
+    const file = await db.file.findFirst({where:{id:input.id, userId}})
+
+    // Throw error if file not found
+    if(!file) throw new TRPCError({code:"NOT_FOUND"})
+
+    // Delete file in db
+    await db.file.delete({where:{id: input.id}})
+
+    // Return deleted file (just in case, we don't need this for now)
+    return(file)
   })
 
 });
