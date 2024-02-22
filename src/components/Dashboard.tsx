@@ -2,15 +2,19 @@
 
 import { trpc } from "@/app/_trpc/client"
 import UploadButton from "./UploadButton"
-import { Ghost, MessageSquare, Plus, Trash } from "lucide-react"
+import { Ghost, Loader2, MessageSquare, Plus, Trash } from "lucide-react"
 import Skeleton from "react-loading-skeleton"
 import Link from "next/link"
 import {format} from "date-fns"
 import { Button } from "./ui/button"
+import { useState } from "react"
 
 const Dashboard = () => {
 
   const { data: files, isLoading } = trpc.getUserFiles.useQuery()
+
+  // Id of the file currently being deleted, so that we can show feedback to the user (change trash icon to a loading icon)
+  const [currentlyDeletingFile, setCurrentlyDeletingFile] = useState<string | null>(null)
 
   // Invalidates the getUserFiles query so that it is run again.
   // Used when deleteing a file so that the file list gets refreshed without reloading the page.
@@ -18,9 +22,9 @@ const Dashboard = () => {
 
   // Used to delete files when trash button is used
   const { mutate: deleteFile } = trpc.deleteFile.useMutation({
-    onSuccess: () => {
-      utils.getUserFiles.invalidate()
-    }
+    onSuccess: () => {utils.getUserFiles.invalidate()},  // Forces file list to refresh
+    onMutate: ({id}) => {setCurrentlyDeletingFile(id)},  // Changes the trash icon to a loading icon
+    onSettled: () => {setCurrentlyDeletingFile(null)}    // Changes the loading icon to a trash icon
   })
 
   return (
@@ -68,7 +72,9 @@ const Dashboard = () => {
 
                   <Button size="sm" className="w-full" variant="destructive"
                           onClick={() => deleteFile({id: file.id})}>
-                    <Trash className="h-4 w-4" />
+                    {currentlyDeletingFile===file.id ? 
+                      <Loader2 className="h-4 w-4 animate-spin" /> :
+                      <Trash className="h-4 w-4" />}
                   </Button>
                 </div>
               </li>
