@@ -1,3 +1,5 @@
+'use client'
+
 import UploadButton from "./UploadButton"
 
 const Dashboard = () => {
