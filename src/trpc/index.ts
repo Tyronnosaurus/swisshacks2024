@@ -1,5 +1,5 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
-import { publicProcedure, router } from './trpc';
+import { privateProcedure, publicProcedure, router } from './trpc';
 import { TRPCError } from '@trpc/server';
 import { db } from '@/db';
  
@@ -36,8 +36,20 @@ export const appRouter = router({
       })
     }
 
-    return({success: true})
+    return {success: true}
+  }),
+
+  // Private procedure (only logged in users can do it) to get a user's uploaded PDFs
+  getUserFiles: privateProcedure.query(async ({ctx}) => {
+    const { userId } = ctx
+
+    return await db.file.findMany({
+      where: {
+        userId
+      }
+    })
   })
+
 });
  
 // Export router type signature, NOT the router itself.
