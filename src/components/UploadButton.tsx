@@ -9,6 +9,8 @@ import { Cloud, File } from "lucide-react"
 import { Progress } from './ui/progress'
 import { useUploadThing } from "@/lib/uploadthing"
 import { useToast } from "./ui/use-toast"
+import { trpc } from "@/app/_trpc/client"
+import { useRouter } from "next/navigation"
 
 const UploadDropZone = () => {
 
@@ -19,6 +21,16 @@ const UploadDropZone = () => {
 
     const {toast} = useToast()
 
+    const router = useRouter()
+
+    const {mutate: startPolling} = trpc.getFile.useMutation({
+        onSuccess: (file) => {
+            // When file is successfully uploaded, redirect user to its chat page
+            router.push(`/dashboard/${file.id}`)
+        },
+        retry: true,
+        retryDelay: 1000
+    })
 
     const startSimulatedProgress = () => {
         setUploadProgress(0)
@@ -52,8 +64,24 @@ const UploadDropZone = () => {
                                     variant: "destructive"
                                 }))
                             }
+
+                            const [fileResponse] = res
+
+                            // Get key of the uploaded file
+                            const key = fileResponse?.key
+                            if(!key){
+                                return(toast({
+                                    title: "Something went wrong",
+                                    description: "Please try again later",
+                                    variant: "destructive"
+                                }))
+                            }
+
+
                             clearInterval(progressInterval)
                             setUploadProgress(100)
+
+                            startPolling({ key })
                         }}>
             {({getRootProps, getInputProps, acceptedFiles}) => (
                 <div {...getRootProps()} className="border h-64 m-4 border-dashed border-gray-300 rounded-lg">
@@ -86,6 +114,8 @@ const UploadDropZone = () => {
                                         <Progress value={uploadProgress} className="h-1 w-full bg-zinc-200" />
                                     </div>
                                 ) : null}
+
+                            <input {...getInputProps()} type="file" id="dropzone-file" className="hidden" />
                         </label>
                     </div>
                 </div>

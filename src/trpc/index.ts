@@ -51,25 +51,44 @@ export const appRouter = router({
     })
   }),
 
-  deleteFile: privateProcedure.input(
-      z.object({ id: z.string() })
-    ).mutation(async ({ctx, input}) => {
-    const {userId} = ctx
+  // Private procedure (only logged in users can do it) to get a single file
+  getFile: privateProcedure
+    .input(z.object({key: z.string()}))
+    .mutation(async ({ctx, input}) => {
+      const {userId} = ctx
 
-    // Find file in db by its id (and make sure it belongs to the logged in user)
-    const file = await db.file.findFirst({where:{id:input.id, userId}})
+      const file = await db.file.findFirst({
+        where: {
+          key: input.key,
+          userId
+        }
+      })
 
-    // Throw error if file not found
-    if(!file) throw new TRPCError({code:"NOT_FOUND"})
+      if(!file) throw new TRPCError({code:"NOT_FOUND"})
 
-    // Delete file in db
-    await db.file.delete({where:{id: input.id}})
+      return(file)
+    }),
 
-    // Return deleted file (just in case, we don't need this for now)
-    return(file)
-  })
+  // Private procedure (only logged in users can do it) to delete a single file
+  deleteFile: privateProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ctx, input}) => {
+      const {userId} = ctx
 
-});
+      // Find file in db by its id (and make sure it belongs to the logged in user)
+      const file = await db.file.findFirst({where:{id:input.id, userId}})
+
+      // Throw error if file not found
+      if(!file) throw new TRPCError({code:"NOT_FOUND"})
+
+      // Delete file in db
+      await db.file.delete({where:{id: input.id}})
+
+      // Return deleted file (just in case, we don't need this for now)
+      return(file)
+    })
+
+})
  
 // Export router type signature, NOT the router itself.
 export type AppRouter = typeof appRouter;
