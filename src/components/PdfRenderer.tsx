@@ -4,11 +4,13 @@ import {Document, Page, pdfjs} from "react-pdf"
 import 'react-pdf/dist/Page/AnnotationLayer.css'; // Support for annotations
 import 'react-pdf/dist/Page/TextLayer.css'; // Support for text layer (for text selection & search)
 
+// Worker. Necessary for rendering PDFs
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
 
 
-/** Uses react-pdf to render a PDF file.
- *  See: https://www.npmjs.com/package/react-pdf
+/*
+ * Uses react-pdf to render a PDF file.
+ * See: https://www.npmjs.com/package/react-pdf
  */
 
 interface PdfRendererProps {
@@ -16,6 +18,7 @@ interface PdfRendererProps {
 }
 
 const PdfRenderer = ({url}:PdfRendererProps) => {
+
   return (
     <div className="w-full bg-white rounded-md shadow flex flex-col items-center">
 
@@ -26,10 +29,11 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
         </div>
       </div>
 
+      {/* PDF rendering */}
       <div className="flex-1 w-full max-h-screen">
         <div>
           <Document file={url} className="max-h-full">
-            <Page pageIndex={1}/>
+            <Page pageIndex={0}/>
           </Document>
         </div>
       </div>
