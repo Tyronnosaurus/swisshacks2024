@@ -1,6 +1,10 @@
-import {Document, Page} from "react-pdf"
+"use client"
+
+import {Document, Page, pdfjs} from "react-pdf"
 import 'react-pdf/dist/Page/AnnotationLayer.css'; // Support for annotations
 import 'react-pdf/dist/Page/TextLayer.css'; // Support for text layer (for text selection & search)
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
 
 
 /** Uses react-pdf to render a PDF file.
