@@ -5,6 +5,7 @@ import {Document, Page, pdfjs} from "react-pdf"
 import 'react-pdf/dist/Page/AnnotationLayer.css'; // Support for annotations
 import 'react-pdf/dist/Page/TextLayer.css'; // Support for text layer (for text selection & search)
 import { useToast } from "./ui/use-toast";
+import { useResizeDetector } from "react-resize-detector"
 
 // Worker. Necessary for rendering PDFs
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
@@ -22,7 +23,9 @@ interface PdfRendererProps {
 const PdfRenderer = ({url}:PdfRendererProps) => {
 
   const {toast} = useToast()
-  
+
+  const { width, ref } = useResizeDetector()
+
   return (
     <div className="w-full bg-white rounded-md shadow flex flex-col items-center">
 
@@ -35,7 +38,7 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
 
       {/* PDF rendering */}
       <div className="flex-1 w-full max-h-screen">
-        <div>
+        <div ref={ref}>
           <Document loading={
                       <div className="flex justify-center">
                         <Loader2 className="my-24 h-6 w-6 animate-spin" />
@@ -50,7 +53,7 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
                     }}
                     file={url}
                     className="max-h-full">
-            <Page pageIndex={0}/>
+            <Page width={width ? width : 1} pageIndex={0}/>
           </Document>
         </div>
       </div>
