@@ -1,7 +1,6 @@
 "use client"
 
 import { Loader2 } from "lucide-react";
-import { Loader2 } from "lucide-react";
 import {Document, Page, pdfjs} from "react-pdf"
 import 'react-pdf/dist/Page/AnnotationLayer.css'; // Support for annotations
 import 'react-pdf/dist/Page/TextLayer.css'; // Support for text layer (for text selection & search)
