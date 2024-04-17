@@ -17,6 +17,8 @@ import { cn } from "@/lib/utils";
 
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
 
+import SimpleBar from "simplebar-react"
+
 
 // Worker. Necessary for rendering PDFs
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
@@ -110,40 +112,42 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem onSelect={() => setScale(.5)}  >50%</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setScale(.075)}>75%</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setScale(0.75)}>75%</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => setScale(1)}   >100%</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => setScale(1.5)} >150%</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => setScale(2)}   >200%</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-
       </div>
 
       {/* PDF rendering */}
       <div className="flex-1 w-full max-h-screen">
-        <div ref={ref}>
-          <Document loading={
-                      <div className="flex justify-center">
-                        <Loader2 className="my-24 h-6 w-6 animate-spin" />
-                      </div>
-                    }
-                    onLoadError={() => {
-                      toast({
-                        title: "Error loading PDF",
-                        description: "Please try again later",
-                        variant: "destructive"
-                      })
-                    }}
-                    onLoadSuccess={({numPages}) => {setNumPages(numPages)}}
-                    file={url}
-                    className="max-h-full">
-            <Page
-              width={width ? width : 1}
-              pageNumber={currPage}
-              scale={scale} />
-          </Document>
-        </div>
+         {/* Use scrollbars to prevent overflow when zoom>100% */}
+         <SimpleBar autoHide={false} className="max-h-[calc(100vh-10rem)]">
+          <div ref={ref}>
+            <Document loading={
+                        <div className="flex justify-center">
+                          <Loader2 className="my-24 h-6 w-6 animate-spin" />
+                        </div>
+                      }
+                      onLoadError={() => {
+                        toast({
+                          title: "Error loading PDF",
+                          description: "Please try again later",
+                          variant: "destructive"
+                        })
+                      }}
+                      onLoadSuccess={({numPages}) => {setNumPages(numPages)}}
+                      file={url}
+                      className="max-h-full">
+              <Page
+                width={width ? width : 1}
+                pageNumber={currPage}
+                scale={scale} />
+            </Document>
+          </div>
+        </SimpleBar>
       </div>
 
     </div>
