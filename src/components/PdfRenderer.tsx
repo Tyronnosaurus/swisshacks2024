@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { ChevronDown, ChevronUp, Loader2, Search } from "lucide-react";
 import {Document, Page, pdfjs} from "react-pdf"
 import 'react-pdf/dist/Page/AnnotationLayer.css'; // Support for annotations
 import 'react-pdf/dist/Page/TextLayer.css'; // Support for text layer (for text selection & search)
@@ -14,6 +14,8 @@ import { useForm } from "react-hook-form"
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { cn } from "@/lib/utils";
+
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
 
 
 // Worker. Necessary for rendering PDFs
@@ -36,6 +38,7 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
   const [numPages, setNumPages] = useState<number>()
   const [currPage, setCurrPage] = useState<number>(1)
 
+  const [scale, setScale] = useState<number>(1)
 
   const CustomPageValidator = z.object({
     page: z.string().refine((num) => Number(num) > 0 && Number(num) <= numPages!)
@@ -95,6 +98,26 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
             <ChevronUp className="h-4 w-4" />
           </Button>
         </div>
+
+        {/* Scale (zoom) dropdowm menu */}
+        <div className="space-x-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button aria-label='zoom' variant='ghost' className="gap-1.5">
+                <Search className="h-4 w-4"/>
+                {scale * 100}%<ChevronDown className='h-3 w-3 opacity-50' />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onSelect={() => setScale(.5)}  >50%</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setScale(.075)}>75%</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setScale(1)}   >100%</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setScale(1.5)} >150%</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setScale(2)}   >200%</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
       </div>
 
       {/* PDF rendering */}
@@ -115,7 +138,10 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
                     onLoadSuccess={({numPages}) => {setNumPages(numPages)}}
                     file={url}
                     className="max-h-full">
-            <Page width={width ? width : 1} pageNumber={currPage}/>
+            <Page
+              width={width ? width : 1}
+              pageNumber={currPage}
+              scale={scale} />
           </Document>
         </div>
       </div>
