@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu";
 
 import SimpleBar from "simplebar-react"
+import PdfFullScreen from "./PdfFullScreen";
 
 
 // Worker. Necessary for rendering PDFs
@@ -76,7 +77,7 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
       {/* PDF options bar */}
       <div className="h-14 w-full border-b border-zinc-200 flex items-center justify-between px-2"> 
         
-        {/* Page selector */}
+        {/* Page selector (on the left)*/}
         <div className="flex items-center gap-1.5">
           <Button variant="ghost"
                   aria-label="previous-page"
@@ -110,8 +111,10 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
           </Button>
         </div>
 
-        {/* Scale (zoom) dropdowm menu */}
+        {/* Controls on the right side */}
         <div className="space-x-2">
+
+          {/* Scale (zoom) dropdowm menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button aria-label='zoom' variant='ghost' className="gap-1.5">
@@ -127,17 +130,22 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
               <DropdownMenuItem onSelect={() => setScale(2)}   >200%</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* Rotation button */}
+          <Button
+            variant='ghost'
+            aria-label="rotate 90 degrees"
+            onClick={() => setRotation((prev) => (prev>=270 ? 0 : prev+90))}>
+            <RotateCw className="h-4 w-4"/>
+          </Button>
+
+          {/* Fullscreen button */}
+          <PdfFullScreen url={url} scale={scale} rotation={rotation}/>
+
         </div>
-
-        {/* Rotation button */}
-        <Button
-          variant='ghost'
-          aria-label="rotate 90 degrees"
-          onClick={() => setRotation((prev) => (prev>=270 ? 0 : prev+90))}>
-          <RotateCw className="h-4 w-4"/>
-        </Button>
-
+        
       </div>
+      
 
       {/* PDF rendering */}
       <div className="flex-1 w-full max-h-screen">
