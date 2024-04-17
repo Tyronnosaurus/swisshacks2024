@@ -133,7 +133,7 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
         <Button
           variant='ghost'
           aria-label="rotate 90 degrees"
-          onClick={() => setRotation((prev) => (prev+90))}>
+          onClick={() => setRotation((prev) => (prev>=270 ? 0 : prev+90))}>
           <RotateCw className="h-4 w-4"/>
         </Button>
 
