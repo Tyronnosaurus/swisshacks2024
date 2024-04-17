@@ -75,10 +75,15 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
 
       {/* PDF options bar */}
       <div className="h-14 w-full border-b border-zinc-200 flex items-center justify-between px-2"> 
+        
+        {/* Page selector */}
         <div className="flex items-center gap-1.5">
           <Button variant="ghost"
                   aria-label="previous-page"
-                  onClick={() => {setCurrPage( (prev) => (prev>1 ? prev-1 : 1) )}}
+                  onClick={() => {
+                    setCurrPage( (prev) => (prev>1 ? prev-1 : 1) )
+                    setValue("page", String(currPage - 1))
+                  }}
                   disabled={currPage<=1}>
             <ChevronDown className="h-4 w-4" />
           </Button>
@@ -96,7 +101,10 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
 
           <Button variant="ghost"
                   aria-label="next-page"
-                  onClick={() => {setCurrPage( (prev) => (prev<numPages! ? prev+1 : numPages!) )}}
+                  onClick={() => {
+                    setCurrPage( (prev) => (prev<numPages! ? prev+1 : numPages!) )
+                    setValue("page", String(currPage + 1))
+                  }}
                   disabled={numPages === undefined || currPage>=numPages!}>
             <ChevronUp className="h-4 w-4" />
           </Button>
