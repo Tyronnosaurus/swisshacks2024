@@ -37,5 +37,12 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 
 # Prisma
-When making edits to schema.prisma, rerun this:
-```npx prisma generate```
+When making edits to schema.prisma, rerun this (must stop server and restart it afterwards):
+
+```npx prisma db push``` Syncs the db's schema in the cloud
+
+or
+
+```npx prisma generate``` Generates usable types in our project. Not necessary if you already ran db push.
+
+See https://www.prisma.io/docs/orm/prisma-migrate/workflows/prototyping-your-schema
