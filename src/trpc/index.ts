@@ -51,6 +51,22 @@ export const appRouter = router({
     })
   }),
 
+  // Get uploadStatus (PENDING, PROCESSING, FAILED OR SUCCESS)
+  getFileUploadStatus: privateProcedure
+    .input(z.object({fileId: z.string()}))
+    .query(async ({input, ctx}) => {
+      const file = await db.file.findFirst({
+        where: {
+          id: input.fileId,
+          userId: ctx.userId
+        }
+      })
+
+      if(!file) return({status: "PENDING" as const})
+
+      return({status: file.uploadStatus})
+    }),
+
   // Private procedure (only logged in users can do it) to get a single file
   getFile: privateProcedure
     .input(z.object({key: z.string()}))

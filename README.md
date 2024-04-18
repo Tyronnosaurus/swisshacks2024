@@ -46,3 +46,7 @@ or
 ```npx prisma generate``` Generates usable types in our project. Not necessary if you already ran db push.
 
 See https://www.prisma.io/docs/orm/prisma-migrate/workflows/prototyping-your-schema
+
+
+Start Prisma Studio with
+```npx prisma studio```
