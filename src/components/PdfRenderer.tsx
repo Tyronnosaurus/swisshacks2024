@@ -44,6 +44,10 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
   const [scale, setScale] = useState<number>(1)
   const [rotation, setRotation] = useState<number>(0)
 
+  // We use these to prevent flickering when changing scale
+  const [renderedScale, setrenderedScale] = useState<number | null>(null)
+  const isLoading = (renderedScale !== scale)
+
   const CustomPageValidator = z.object({
     page: z.string().refine((num) => Number(num) > 0 && Number(num) <= numPages!)
   })
@@ -167,11 +171,33 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
                       onLoadSuccess={({numPages}) => {setNumPages(numPages)}}
                       file={url}
                       className="max-h-full">
+              
+              {/* Prevent flickering when changing scale by showing old scale until the new one has rendered */}
+              {isLoading && renderedScale ?
+                <Page
+                  width={width ? width : 1}
+                  pageNumber={currPage}
+                  scale={scale}
+                  rotate={rotation}
+                  key={"@" + renderedScale}/>
+                  :
+                  null
+              }
+
               <Page
-                width={width ? width : 1}
-                pageNumber={currPage}
-                scale={scale}
-                rotate={rotation} />
+                  className={cn(isLoading ? "hidden" : "")}
+                  width={width ? width : 1}
+                  pageNumber={currPage}
+                  scale={scale}
+                  rotate={rotation}
+                  key={"@" + scale}
+                  loading={
+                    <div className="flex justify-center">
+                      <Loader2 className="my-24 h-6 w-6 animate-spin" />
+                    </div>
+                  }
+                  onRenderSuccess={() => setrenderedScale(scale)}/>
+
             </Document>
           </div>
         </SimpleBar>
