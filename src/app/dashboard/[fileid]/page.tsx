@@ -30,7 +30,7 @@ const Page = async ({params}: PageProps) => {
 
     // If file isn't found in db, redirect to 404 page
     if(!file) notFound()
-    console.log(file.url)
+    
     return (
         <div className="flex-1 justify-between flex flex-col h-[calc(100vh-3.5rem)]">
             <div className="mx-auto w-full max-w-8xl frow lg:flex lg:px-2">
