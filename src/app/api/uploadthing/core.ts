@@ -6,6 +6,7 @@ const f = createUploadthing();
  
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
+
   // Define as many FileRoutes as you like, each with a unique routeSlug
   pdfUploader: f({ pdf: { maxFileSize: "4MB" } })
     // Set permissions and file types for this FileRoute
@@ -16,15 +17,17 @@ export const ourFileRouter = {
       const { getUser } = getKindeServerSession()
       const user = getUser()
 
-      // If error is thrown, uploadThing will know user can't upload file
+      // If no user is logged in, throw error and stop uploading to uploadThing
       if(!user || !user.id) throw new Error("Unauthorized")
-      
  
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
       return({userId: user.id})
     })
 
     .onUploadComplete(async ({ metadata, file }) => {
+
+      // Once we finish uploading, add a File entry to our database
+      //(with a PROCESSING status since we still have to parse it)
       const createdFile = await db.file.create({
         data: {
           key: file.key,
