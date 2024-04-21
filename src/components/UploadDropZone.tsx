@@ -56,8 +56,10 @@ const UploadDropZone = () => {
                   onDrop={async (acceptedFile) => {
                             setIsUploading(true)
                             const progressInterval = startSimulatedProgress()
+
                             // Handle file uploading
                             const res = await startUpload(acceptedFile)
+
                             if(!res){
                                 return(toast({
                                     title: "Something went wrong",
@@ -70,6 +72,7 @@ const UploadDropZone = () => {
 
                             // Get key of the uploaded file
                             const key = fileResponse?.key
+                            
                             if(!key){
                                 return(toast({
                                     title: "Something went wrong",
