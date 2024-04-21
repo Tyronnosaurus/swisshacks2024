@@ -3,9 +3,10 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
  
 import { PDFLoader } from "langchain/document_loaders/fs/pdf"
-import { getPineconeClient } from "@/lib/pinecone"
-import { PineconeStore } from "langchain/vectorstores/pinecone"
+import { PineconeStore } from "@langchain/pinecone";
+import { getPineconeClient } from "@/lib/pinecone";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai"
+
 
 const f = createUploadthing();
  
@@ -56,23 +57,28 @@ export const ourFileRouter = {
         const pagesAmt = pageLevelDocs.length
 
         // Vectorize and index the entire document
-        const pinecone = await getPineconeClient()
-        const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX_NAME!)
+        const pinecone = getPineconeClient();
+        const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX_NAME!);
 
         const embeddings = new OpenAIEmbeddings({
-          openAIApiKey: process.env.OPEN_AI_KEY
-        })
+          openAIApiKey: process.env.OPENAI_API_KEY!,
+        });
 
         await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
           pineconeIndex,
-          namespace: createdFile.id
-        })
+          namespace: createdFile.id,
+        });
 
-        // Change the file's uploadStatus in the db from Processing to Success
         await db.file.update({
-          data: { uploadStatus: "SUCCESS" },
-          where: { id: createdFile.id }
-        })
+          data: {
+            uploadStatus: "SUCCESS",
+          },
+          where: {
+            id: createdFile.id,
+            userId: metadata.userId
+          },
+        });
+
 
       } catch (err) {
         console.log(err)
@@ -80,7 +86,9 @@ export const ourFileRouter = {
         // Change the file's uploadStatus in the db from Processing to Failed
         await db.file.update({
           data: { uploadStatus: "FAILED" },
-          where: { id: createdFile.id }
+          where: {
+            id: createdFile.id,
+            userId: metadata.userId }
         })
       }
 
