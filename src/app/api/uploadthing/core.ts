@@ -69,6 +69,7 @@ export const ourFileRouter = {
           namespace: createdFile.id,
         });
 
+        // Change the file's uploadStatus to "SUCCESS" in the database
         await db.file.update({
           data: {
             uploadStatus: "SUCCESS",
