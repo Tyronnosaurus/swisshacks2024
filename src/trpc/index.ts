@@ -11,6 +11,9 @@ import { INFINITE_QUERY_LIMIT } from '@/config/infinite-query';
 
 export const appRouter = router({
 
+  // Public procedures can be used by everyone.
+  // Private procedures can only be used by logged in users.
+
   // Public procedure to synchronize user auth service with database.
   // If a user is logged in but not in the database, add them to the database. 
   authCallback: publicProcedure.query(async () => {
@@ -42,7 +45,8 @@ export const appRouter = router({
     return {success: true}
   }),
 
-  // Private procedure (only logged in users can do it) to get a user's uploaded PDFs
+
+  // Private procedure to get a user's uploaded PDFs
   getUserFiles: privateProcedure.query(async ({ctx}) => {
     const { userId } = ctx
 
@@ -96,7 +100,7 @@ export const appRouter = router({
       let nextCursor: typeof cursor | undefined = undefined
 
       // If the db returned as many msgs as we requested, it means we haven't reached the oldest msg yet.
-      // Save the Id of the extra msg we added to the batch and remove it.
+      // Save the Id of the extra msg we added to the batch and discard it.
       if(messages.length > limit) {
         const nextItem = messages.pop()
         nextCursor = nextItem?.id
@@ -106,7 +110,7 @@ export const appRouter = router({
     }),
 
 
-  // Get uploadStatus (PENDING, PROCESSING, FAILED or SUCCESS)
+  // Get a file's uploadStatus (PENDING, PROCESSING, FAILED or SUCCESS)
   getFileUploadStatus: privateProcedure
     .input(z.object({fileId: z.string()}))
     .query(async ({input, ctx}) => {
@@ -122,7 +126,8 @@ export const appRouter = router({
       return({status: file.uploadStatus})
     }),
 
-  // Private procedure (only logged in users can do it) to get a single file
+
+  // Private procedure to get a single file's info
   getFile: privateProcedure
     .input(z.object({key: z.string()}))
     .mutation(async ({ctx, input}) => {
@@ -140,7 +145,8 @@ export const appRouter = router({
       return(file)
     }),
 
-  // Private procedure (only logged in users can do it) to delete a single file
+
+  // Private procedure to delete a single file's info from database
   deleteFile: privateProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ctx, input}) => {
