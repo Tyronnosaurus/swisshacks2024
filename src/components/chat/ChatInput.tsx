@@ -9,6 +9,7 @@ interface ChatInputProps {
   isDisabled?: boolean
 }
 
+// Component that contains the text input and the Send button
 const ChatInput = ({isDisabled}: ChatInputProps) => {
 
   const {addMessage, handleInputChange, isLoading, message} = useContext(ChatContext)
@@ -22,6 +23,7 @@ const ChatInput = ({isDisabled}: ChatInputProps) => {
           <div className="relative flex h-full flex-1 items-stretch md:flex-col">
             <div className="relative flex flex-col w-full flex-grow p-4">
               <div className="relative">
+
                 <Textarea
                   ref={textAreaRef}
                   placeholder="Your question goes here"
@@ -39,6 +41,7 @@ const ChatInput = ({isDisabled}: ChatInputProps) => {
                   className="resize-none pr-12 text-base py-3
                              scrollbar-thumb-blue scrollbar-thumb-rounded
                              scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch "/>
+                
                 <Button aria-label="send message"
                         disabled={isLoading || isDisabled}
                         className="absolute bottom-1.5 right-[8px]"
@@ -47,8 +50,9 @@ const ChatInput = ({isDisabled}: ChatInputProps) => {
                           addMessage()
                           textAreaRef.current?.focus()
                         }}>
-                  <Send className="h-4 w-4"/>
+                  <Send className="h-4 w-4"/> {/* Inside the button, show an icon */}
                 </Button>
+                
               </div>
             </div>
           </div>
