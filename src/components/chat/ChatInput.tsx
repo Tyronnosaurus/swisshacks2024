@@ -42,7 +42,7 @@ const ChatInput = ({isDisabled}: ChatInputProps) => {
                 <Button aria-label="send message"
                         disabled={isLoading || isDisabled}
                         className="absolute bottom-1.5 right-[8px]"
-                        // type='submit'
+                        type='button'
                         onClick={() => {
                           addMessage()
                           textAreaRef.current?.focus()
