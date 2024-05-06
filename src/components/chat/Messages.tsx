@@ -4,10 +4,13 @@ import { Loader2, MessageSquare, X } from "lucide-react"
 import Skeleton from "react-loading-skeleton"
 import Message from "./Message"
 
+
 interface MessagesProps {
   fileId: string
 }
 
+// Component that shows the chat messages (i.e. the conversation) between user and AI.
+// Starts showing only the most recent messages, and loads older messages as the user scrolls up.
 const Messages = ({fileId}: MessagesProps) => {
 
   const {data, isLoading, fetchNextPage} = trpc.getFileMessages.useInfiniteQuery({
@@ -36,7 +39,7 @@ const Messages = ({fileId}: MessagesProps) => {
     )
   }
 
-  //
+  // Combine the messages with the loading indicator, if necessary
   const combinedMessages = [
     ...(true ? [loadingMessage] : []),  // Add the loading indicator
     ...(messages ?? [])                 // And the messages
@@ -49,6 +52,7 @@ const Messages = ({fileId}: MessagesProps) => {
         {(combinedMessages && combinedMessages.length > 0) ? (
           combinedMessages.map((message, i) => {
 
+            // We'll use this to prevent adding the sender icon to multiple consecutive messages
             const isNextMessageSamePerson = (combinedMessages[i-1]?.isUserMessage === combinedMessages[i]?.isUserMessage)
 
             if(i === combinedMessages.length - 1){

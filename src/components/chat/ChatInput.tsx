@@ -1,9 +1,9 @@
-import { boolean } from "zod"
 import { Textarea } from "../ui/textarea"
 import { Button } from "../ui/button"
 import { Send } from "lucide-react"
 import { useContext, useRef } from "react"
 import { ChatContext } from "./ChatContext"
+
 
 interface ChatInputProps {
   isDisabled?: boolean
@@ -13,6 +13,7 @@ const ChatInput = ({isDisabled}: ChatInputProps) => {
 
   const {addMessage, handleInputChange, isLoading, message} = useContext(ChatContext)
 
+  // Get ref of the text input so that we can focus the cursor on it
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
 
   return (
@@ -41,7 +42,7 @@ const ChatInput = ({isDisabled}: ChatInputProps) => {
                 <Button aria-label="send message"
                         disabled={isLoading || isDisabled}
                         className="absolute bottom-1.5 right-[8px]"
-                        type='submit'
+                        // type='submit'
                         onClick={() => {
                           addMessage()
                           textAreaRef.current?.focus()

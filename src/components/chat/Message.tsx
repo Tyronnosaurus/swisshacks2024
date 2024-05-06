@@ -6,18 +6,22 @@ import { format } from "date-fns"
 
 
 interface MessageProps {
-    message: ExtendedMessage
-    isNextMessageSamePerson: boolean
+    message: ExtendedMessage            // Contains the actual text content, its date, whether it comes from the user or the AI...
+    isNextMessageSamePerson: boolean    // Used to prevent appending the user's icon multiple times for consecutive messages
 }
 
+// Component to show one single message in the chat
 const Message = ({message, isNextMessageSamePerson}: MessageProps) => {
+
   return (
     <div className={cn('flex items-end', {'justify-end': message.isUserMessage})}>
+
+        {/* Sender's icon */}
         <div className={cn("relative flex h-6 w-6 aspect-square items-center justify-center", {
             "order-2 bg-blue-600 rounded-sm": message.isUserMessage,
             "order-1 bg-zinc-800 rounded-sm": !message.isUserMessage,
             invisible: isNextMessageSamePerson
-        })}>
+        })}>            
             {message.isUserMessage ? (
                 <Icons.user className='fill-zinc-200 text-zinc-200 h-3/4 w-3/4' />
             ) : (
@@ -25,6 +29,7 @@ const Message = ({message, isNextMessageSamePerson}: MessageProps) => {
             )}
         </div>
 
+        
         <div className={cn("flex flex-col space-y-2 text-base max-w-md mx-2", {
             "order-1 items-end": message.isUserMessage,
             "order-2 items-start": !message.isUserMessage
@@ -36,26 +41,28 @@ const Message = ({message, isNextMessageSamePerson}: MessageProps) => {
                 "rounded-bl-none": !isNextMessageSamePerson && !message.isUserMessage
             })}>
                 
+                {/* To display the actual text, we'll use a markdown library to be able to represent
+                    many text types: bold, italics, underlines, headers, bulletpoints...
+                    ReactMarkdown only accepts children of type string, so we need to check that. */}
                 {typeof message.text === 'string' ? (
-                    // ReactMarkdown only accepts children of type string
-                    <ReactMarkdown className={cn("prose", {
-                        "text-zinc-50": message.isUserMessage
-                    })}>
+                    <ReactMarkdown className={cn("prose", {"text-zinc-50": message.isUserMessage})}>
                         {message.text}
                     </ReactMarkdown>
                 ) : (
                     message.text
                 )}
+
+                {/* Message's date */}
                 {(message.id !== 'loading-message') ? (
                     <div className={cn("text-xs select-none mt-2 w-full text-right",
                         {
                             "text-zinc-500": !message.isUserMessage,
                             "text-blue-300": message.isUserMessage
-                        }
-                    )}>
+                        })}>
                         {format(new Date(message.createdAt), "HH:mm")}
                     </div>
-                ) : null}
+                ) : null
+                }
             </div>
         </div>
     </div>
