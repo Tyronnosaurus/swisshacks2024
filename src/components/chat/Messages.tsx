@@ -1,7 +1,12 @@
 import { trpc } from "@/app/_trpc/client"
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query"
-import { Loader2, MessageSquare, X } from "lucide-react"
+import Message from "./Message"
+import { useContext } from "react"
+import { ChatContext } from "./ChatContext"
+import { Loader2, MessageSquare } from "lucide-react"
 import Skeleton from "react-loading-skeleton"
+
+
 // Placeholder skeleton for while the chat is loading
 const ChatSkeleton = () => {
   return(
@@ -36,6 +41,8 @@ interface MessagesProps {
 // Starts showing only the most recent messages, and loads older messages as the user scrolls up.
 const Messages = ({fileId}: MessagesProps) => {
 
+  const {isLoading: isAiThinking} = useContext(ChatContext) // We name it isAiThinking to prevent a naming conflict
+
   const {data, isLoading, fetchNextPage} = trpc.getFileMessages.useInfiniteQuery({
     fileId,
     limit: INFINITE_QUERY_LIMIT
@@ -64,8 +71,8 @@ const Messages = ({fileId}: MessagesProps) => {
 
   // Combine the messages with the loading indicator, if necessary
   const combinedMessages = [
-    ...(true ? [loadingMessage] : []),  // Add the loading indicator
-    ...(messages ?? [])                 // And the messages
+    ...(isAiThinking ? [loadingMessage] : []),  // Add the loading indicator
+    ...(messages ?? [])                         // and the messages
   ]
 
 
