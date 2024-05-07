@@ -7,14 +7,11 @@ import { Loader2, MessageSquare } from "lucide-react"
 import Skeleton from "react-loading-skeleton"
 
 
-// Placeholder skeleton for while the chat conversation is loading
+// Placeholder skeleton for while the chat conversation is loading. Shows 4 gray bars.
 const SkeletonMessages = () => {
   return(
     <div className='w-full flex flex-col gap-2'>
-      <Skeleton className='h-16' />
-      <Skeleton className='h-16' />
-      <Skeleton className='h-16' />
-      <Skeleton className='h-16' />
+      <Skeleton className='h-16' count={4}/>
     </div>
   )
 }
