@@ -7,8 +7,8 @@ import { Loader2, MessageSquare } from "lucide-react"
 import Skeleton from "react-loading-skeleton"
 
 
-// Placeholder skeleton for while the chat is loading
-const ChatSkeleton = () => {
+// Placeholder skeleton for while the chat conversation is loading
+const SkeletonMessages = () => {
   return(
     <div className='w-full flex flex-col gap-2'>
       <Skeleton className='h-16' />
@@ -20,7 +20,7 @@ const ChatSkeleton = () => {
 }
 
 // Message to show when user still hasn't sent any message
-const EmptyChat = () => {
+const EmptyMessages = () => {
   return(
     <div className='flex-1 flex flex-col items-center jsutify-center gap-2'>
       <MessageSquare className='h-8 w-8 text-blue-500' />
@@ -80,19 +80,19 @@ const Messages = ({fileId}: MessagesProps) => {
     <div className="flex max-h-[calc(100vh-10.5rem)] border-zinc-200 flex-1 flex-col-reverse gap-4 p-3 overflow-y-auto
                     scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
         {(combinedMessages && combinedMessages.length > 0) ? (
-          combinedMessages.map((message, i) => {
+           combinedMessages.map((message, i) => {
 
             // We'll use this to prevent adding the sender icon to multiple consecutive messages
             const isNextMessageSamePerson = (combinedMessages[i-1]?.isUserMessage === combinedMessages[i]?.isUserMessage)
-
+      
             if(i === combinedMessages.length - 1){
-              return <Message message={message} isNextMessageSamePerson={isNextMessageSamePerson} key={message.id} />
+              return      <Message message={message} isNextMessageSamePerson={isNextMessageSamePerson} key={message.id} />
             } else return <Message message={message} isNextMessageSamePerson={isNextMessageSamePerson} key={message.id} />
           })
         ) : isLoading ? (
-          <ChatSkeleton />
+          <SkeletonMessages />
         ) : (
-          <EmptyChat />
+          <EmptyMessages />
         )}
     </div>
   )
