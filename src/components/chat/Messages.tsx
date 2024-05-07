@@ -2,7 +2,30 @@ import { trpc } from "@/app/_trpc/client"
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query"
 import { Loader2, MessageSquare, X } from "lucide-react"
 import Skeleton from "react-loading-skeleton"
-import Message from "./Message"
+// Placeholder skeleton for while the chat is loading
+const ChatSkeleton = () => {
+  return(
+    <div className='w-full flex flex-col gap-2'>
+      <Skeleton className='h-16' />
+      <Skeleton className='h-16' />
+      <Skeleton className='h-16' />
+      <Skeleton className='h-16' />
+    </div>
+  )
+}
+
+// Message to show when user still hasn't sent any message
+const EmptyChat = () => {
+  return(
+    <div className='flex-1 flex flex-col items-center jsutify-center gap-2'>
+      <MessageSquare className='h-8 w-8 text-blue-500' />
+      <h3 className="font-semibold text-xl">You&apos;re all set!</h3>
+      <p className="text-zinc-500 text-sm">
+        Ask your first question to get started.
+      </p>
+    </div>
+  )
+}
 
 
 interface MessagesProps {
@@ -60,20 +83,9 @@ const Messages = ({fileId}: MessagesProps) => {
             } else return <Message message={message} isNextMessageSamePerson={isNextMessageSamePerson} key={message.id} />
           })
         ) : isLoading ? (
-          <div className='w-full flex flex-col gap-2'>
-            <Skeleton className='h-16' />
-            <Skeleton className='h-16' />
-            <Skeleton className='h-16' />
-            <Skeleton className='h-16' />
-          </div>
+          <ChatSkeleton />
         ) : (
-          <div className='flex-1 flex flex-col items-center jsutify-center gap-2'>
-            <MessageSquare className='h-8 w-8 text-blue-500' />
-            <h3 className="font-semibold text-xl">You&apos;re all set!</h3>
-            <p className="text-zinc-500 text-sm">
-              Ask your first question to get started.
-            </p>
-          </div>
+          <EmptyChat />
         )}
     </div>
   )
