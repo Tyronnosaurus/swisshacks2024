@@ -1,10 +1,11 @@
 import { trpc } from "@/app/_trpc/client"
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query"
 import Message from "./Message"
-import { useContext } from "react"
+import { useContext, useEffect, useRef } from "react"
 import { ChatContext } from "./ChatContext"
 import { Loader2, MessageSquare } from "lucide-react"
 import Skeleton from "react-loading-skeleton"
+import { useIntersection } from '@mantine/hooks'
 
 
 // Placeholder skeleton for while the chat conversation is loading. Shows 4 gray bars.
@@ -72,6 +73,19 @@ const Messages = ({fileId}: MessagesProps) => {
     ...(messages ?? [])                         // and the messages
   ]
 
+  // Load more messages when we scroll to the top of the conversation.
+  // useIntersection will let us know the visibility of the upper message within the scrollbox.
+  const lastMessageRef = useRef<HTMLDivElement>(null)
+
+  const {ref, entry} = useIntersection({
+    root: lastMessageRef.current,
+    threshold: 1
+  })
+
+  useEffect(() => {
+    if(entry?.isIntersecting) fetchNextPage()
+  }, [entry, fetchNextPage])
+
 
   return (
     <div className="flex max-h-[calc(100vh-10.5rem)] border-zinc-200 flex-1 flex-col-reverse gap-4 p-3 overflow-y-auto
@@ -83,7 +97,7 @@ const Messages = ({fileId}: MessagesProps) => {
             const isNextMessageSamePerson = (combinedMessages[i-1]?.isUserMessage === combinedMessages[i]?.isUserMessage)
       
             if(i === combinedMessages.length - 1){
-              return      <Message message={message} isNextMessageSamePerson={isNextMessageSamePerson} key={message.id} />
+              return      <Message message={message} isNextMessageSamePerson={isNextMessageSamePerson} key={message.id} ref={ref}/>
             } else return <Message message={message} isNextMessageSamePerson={isNextMessageSamePerson} key={message.id} />
           })
         ) : isLoading ? (
