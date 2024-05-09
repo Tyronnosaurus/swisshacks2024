@@ -18,7 +18,7 @@ const Page = () => {
         {
           plan: 'Free',
           tagline: 'For small side projects.',
-          quota: 10,
+          pdfsPerMonth: 10,
           features: [
             {
               text: '5 pages per PDF',
@@ -45,7 +45,7 @@ const Page = () => {
         {
           plan: 'Pro',
           tagline: 'For larger projects with higher needs.',
-          quota: PLANS.find((p) => p.slug === 'pro')!.quota,
+          pdfsPerMonth: PLANS.find((p) => p.slug === 'pro')!.pdfsPerMonth,
           features: [
             {
               text: '25 pages per PDF',
@@ -83,7 +83,7 @@ const Page = () => {
 
                 <div className="pt-12 grid grid-cols-1 gap-10 lg:grid-cols-2">
                     <TooltipProvider>
-                        {pricingItems.map(({plan, tagline, quota, features}) => {
+                        {pricingItems.map(({plan, tagline, pdfsPerMonth, features}) => {
                             const price = PLANS.find((p) => p.slug === plan.toLowerCase())?.price.amount || 0
 
                             return(
@@ -108,7 +108,7 @@ const Page = () => {
 
                                     <div className="flex h-20 items-center justify-center border-b border-t border-gray-200 bg-gray-50">
                                         <div className="flex items-center space-x-1">
-                                            <p>{quota.toLocaleString()} PDFs/month included</p>
+                                            <p>{pdfsPerMonth.toLocaleString()} PDFs/month included</p>
 
                                             <Tooltip delayDuration={300}>
                                                 <TooltipTrigger className="cursor-default ml-1.5">
