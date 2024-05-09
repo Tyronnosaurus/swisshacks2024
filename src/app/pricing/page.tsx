@@ -10,6 +10,7 @@ import UpgradeButton from "@/components/UpgradeButton"
 
 const Page = () => {
 
+    // Get logged in user so that we can decide what call to action should the buttons have (Sign up vs Upgrade)
     const {getUser} = getKindeServerSession()
     const user = getUser()
 
@@ -122,9 +123,12 @@ const Page = () => {
                                         </div>
                                     </div>
 
+                                    {/* List of features included or not included in the plan */}
                                     <ul className="my-10 space-y-5 px-8">
                                         {features.map(({text, tooltip, negative}) => (
                                             <li key={text} className="flex space-x-5">
+
+                                                {/* Show a tick (feature included) or a minus sign (feature not included) */}
                                                 <div className="flex-shrink-0">
                                                     {negative ? (
                                                         <Minus className="h-6 w-6 text-grey-300" />
@@ -133,6 +137,7 @@ const Page = () => {
                                                     )}
                                                 </div>
 
+                                                {/* Describe the feature, with a tooltip at the end for further info */}
                                                 <div className="flex items-center space-x-1">
                                                     <p className={cn('text-gray-400', {'text-gray-600': negative})}>
                                                         {text}
@@ -155,6 +160,8 @@ const Page = () => {
                                     </ul>
 
                                     <div className="border-t border-gray-200" />
+
+                                    {/* Button to subscribe to the plan */}
                                     <div className="p-5">
                                         {plan === "Free" ? (
                                             <Link href="/sign-in" className={buttonVariants({className: 'w-full', variant: 'secondary'})}>
