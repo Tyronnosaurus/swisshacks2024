@@ -72,4 +72,8 @@ const Message = forwardRef<HTMLDivElement, MessageProps>(({message, isNextMessag
   }
 )
 
+// Because we declared the component as a forwardRef, we need to manually set its displayName
+// to prevent a "Missing Display Name" Lint error
+Message.displayName = "Message"
+
 export default Message
