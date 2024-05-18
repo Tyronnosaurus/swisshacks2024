@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { buttonVariants } from './ui/button'
 import { LoginLink, RegisterLink, getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import UserAccountNav from './UserAccountNav'
+import MobileNav from './MobileNav'
 
 const Navbar = () => {
 
@@ -18,7 +19,7 @@ const Navbar = () => {
                 <span>quill.</span>
             </Link>
             
-            {/* TO DO: add mobile navbar */}
+            <MobileNav isAuth={!!user}/>
 
             <div className='hidden items-center space-x-4 sm:flex'>
                 {!user ? (
