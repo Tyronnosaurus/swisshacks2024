@@ -1,6 +1,16 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+
+A complete webapp where you can upload a PDF and ask questions about it in plain English. Includes everything a SaaS would need: responsiveness, user registration, database, different plans, payment processor, chat with infinite scrolling, etc.
+
+Whenever a PDF is uploaded, it is analysed and each page has its text converted to vector embeddings. When a user asks a question, the question is also converted to a vector embedding. A comparison is done to find out which pages are semantically closer to the question. Finally, a prompt is sent to an AI service with both the question and the relevant text from the PDF. The answer is streamed into a chat message, and the user can then ask further questions. 
+
+It is based on [this tutorial](https://www.youtube.com/watch?v=ucX2zXAZ1I0) by 'Josh tried coding'.
+
+
 
 ## Getting Started
+
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 First, run the development server:
 
@@ -8,7 +18,7 @@ First, run the development server:
 npm run dev
 # or
 yarn dev
-# or
+# or (recommended way)
 pnpm dev
 # or
 bun dev
@@ -16,24 +26,8 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 
 # Prisma
