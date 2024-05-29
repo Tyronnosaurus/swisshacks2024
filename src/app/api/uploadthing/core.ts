@@ -125,15 +125,17 @@ const onUploadComplete = async ({metadata, file}: onUploadCompleteProps) => {
 }
 
 
-// FileRouter for your app, can contain multiple FileRoutes
+// FileRouter for uploading to UploadThing
 export const ourFileRouter = {
 
-  // Define as many FileRoutes as you like, each with a unique routeSlug
-  freePlanUploader: f({ pdf: { maxFileSize: "4MB" } })
-    // Set permissions and file types for this FileRoute
+  // Here we define as many upload routes as we need, each with a unique routeSlug
 
+  freePlanUploader: f({ pdf: { maxFileSize: "4MB" } })  // Set permissions and file types for this FileRoute
     .middleware(middleware)
+    .onUploadComplete(onUploadComplete),
 
+  proPlanUploader: f({ pdf: { maxFileSize: "16MB" } })  // Set permissions and file types for this FileRoute
+    .middleware(middleware)
     .onUploadComplete(onUploadComplete)
 
 } satisfies FileRouter;
