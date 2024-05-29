@@ -1,5 +1,6 @@
 import Dashboard from '@/components/Dashboard'
 import { db } from '@/db'
+import { getUserSubscriptionPlan } from '@/lib/stripe'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { redirect } from 'next/navigation'
 import React from 'react'
@@ -22,8 +23,10 @@ const Page = async () => {
   // If user is not in db, redirect to auth callback page where they will be added to the db
   if(!dbUser) redirect('/auth-callback?origin=dashboard')
 
+  const subscriptionPlan = await getUserSubscriptionPlan()
+  
   return (
-    <Dashboard />
+    <Dashboard subscriptionPlan={subscriptionPlan}/>
   )
 }
 

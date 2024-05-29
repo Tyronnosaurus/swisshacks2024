@@ -8,8 +8,14 @@ import Link from "next/link"
 import {format} from "date-fns"
 import { Button } from "./ui/button"
 import { useState } from "react"
+import { getUserSubscriptionPlan } from "@/lib/stripe"
 
-const Dashboard = () => {
+
+interface PageProps {
+  subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
+}
+
+const Dashboard = ({subscriptionPlan}: PageProps) => {
 
   const { data: files, isLoading } = trpc.getUserFiles.useQuery()
 
@@ -32,7 +38,7 @@ const Dashboard = () => {
       <div className="mt-8 flex flex-col items-start justify-between gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-center sm:gap-0">
         <h1 className="mb-3 font-bold text-5xl text-gray-900">My files</h1>
 
-        <UploadButton />
+        <UploadButton isSubscribed={subscriptionPlan.isSubscribed}/>
       </div>
 
       {/* Display the user's files */}

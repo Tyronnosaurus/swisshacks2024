@@ -12,12 +12,12 @@ import { useRouter } from "next/navigation"
 
 
 /** Modal for the user to upload files. Has a button to open a file dialog, a drop zone, a progress bar, and a toast to show success or fail */
-const UploadDropZone = () => {
+const UploadDropZone = ({isSubscribed}: {isSubscribed: boolean}) => {
 
     const [isUploading, setIsUploading] = useState<boolean>(false)
     const [uploadProgress, setUploadProgress] = useState<number>(0)
 
-    const {startUpload} = useUploadThing("pdfUploader")
+    const {startUpload} = useUploadThing(isSubscribed ? "proPlanUploader" : "freePlanUploader")
 
     const {toast} = useToast()
 
