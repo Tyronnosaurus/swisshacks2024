@@ -2,7 +2,7 @@
 
 import { trpc } from "@/app/_trpc/client"
 import UploadButton from "./UploadButton"
-import { Ghost, Loader2, MessageSquare, Plus, Trash } from "lucide-react"
+import { Ghost, Loader2, Trash } from "lucide-react"
 import Skeleton from "react-loading-skeleton"
 import Link from "next/link"
 import {format} from "date-fns"
@@ -65,23 +65,21 @@ const Dashboard = ({subscriptionPlan}: PageProps) => {
                   </div>
                 </Link>
 
-                <div className="px-6 mt-4 grid grid-cols-3 place-items-center py-2 gap-6 text-xs text-zinc-500">
+                <div className="px-6 mt-4 grid grid-cols-2 place-items-stretch py-2 gap-6 text-xs text-zinc-500">
+                  
+                  {/* Date of upload */}
                   <div className="flex items-center gap-2">
-                    <Plus className="h-4 w-4" />
-                    {format(new Date(file.createdAt), "dd MMM yyyy")}
+                    Added {format(new Date(file.createdAt), "dd MMM yyyy")}
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <MessageSquare className="h-4 w-4" />
-                    mock previous messages
-                  </div>
-
+                  {/* 'Delete' button */}
                   <Button size="sm" className="w-full" variant="destructive"
                           onClick={() => deleteFile({id: file.id})}>
                     {currentlyDeletingFile===file.id ? 
                       <Loader2 className="h-4 w-4 animate-spin" /> :
                       <Trash className="h-4 w-4" />}
                   </Button>
+                  
                 </div>
               </li>
 
