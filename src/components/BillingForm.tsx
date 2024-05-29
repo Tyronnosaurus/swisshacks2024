@@ -42,12 +42,13 @@ const BillingForm = ({subscriptionPlan}: BillingFormProps) => {
                     <CardHeader>
                         <CardTitle>Subscription Plan</CardTitle>
                         <CardDescription>
-                            You are currently on the{' '}
-                            <strong>{subscriptionPlan.name}</strong> plan.
+                            You are currently on the <strong>{subscriptionPlan.name}</strong> plan.
                         </CardDescription>
                     </CardHeader>
 
                     <CardFooter className="flex flex-col items-start space-y-2 md:flex-row md:justify-between md:space-x-0">
+                        
+                        {/* Button that does nothing */}
                         <Button type='submit'>
                             {isLoading && <Loader2 className="mr-4 h-4 w-4 animate-spin" />}
                             {subscriptionPlan.isSubscribed ? 'Manage Subscription' : 'Upgrade to PRO'}
