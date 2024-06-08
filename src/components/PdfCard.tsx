@@ -9,14 +9,12 @@ import { useState } from "react"
 
 interface PdfCardProps {
   file: {id: string, name: string, createdAt: string},
+  onSelect: (id: string, selected: boolean) => void,
+  isSelected: boolean
 }
 
 
-const PdfCard = ({file}: PdfCardProps) => {
-  
-    // State to manage checkbox selection
-    const [selected, setSelected] = useState<boolean>(false);
-
+const PdfCard = ({file, onSelect, isSelected}: PdfCardProps) => {
 
     // Id of the file currently being deleted, so that we can show feedback to the user (change trash icon to a loading icon)
     const [currentlyDeletingFile, setCurrentlyDeletingFile] = useState<string | null>(null)
@@ -33,9 +31,9 @@ const PdfCard = ({file}: PdfCardProps) => {
     })
   
     return(
-      <div className={`col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow transition hover:shadow-lg border-emerald-600 ${selected ? "border-4" : ""}`}>
+      <div className={`col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow transition hover:shadow-lg border-emerald-600 ${isSelected ? "border-4" : ""}`}>
         <div className="flex flex-col gap-2"
-             onClick={() => {setSelected(!selected)}}>
+             onClick={() => { onSelect(file.id, !isSelected) }}>
             <div className="pt-6 px-6 flex w-full items-cneter justify-between space-x-6">
             
                 {/* Circle */}
