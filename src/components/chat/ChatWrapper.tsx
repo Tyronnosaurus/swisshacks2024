@@ -9,27 +9,35 @@ import { buttonVariants } from "../ui/button"
 import { ChatContextProvider } from "./ChatContext"
 
 interface ChatWrapperProps {
-  fileId: string
+  fileId1: string,
+  fileId2: string
 }
 
-const ChatWrapper = ({fileId}: ChatWrapperProps) => {
+const ChatWrapper = ({fileId1, fileId2}: ChatWrapperProps) => {
 
 
-  const {data, isLoading} = trpc.getFileUploadStatus.useQuery({
-    fileId,
+  const {data: data1, isLoading: isLoading1} = trpc.getFileUploadStatus.useQuery({
+    fileId: fileId1,
+  }, {
+    refetchInterval: (data) => (data?.status === "SUCCESS" || data?.status === "FAILED") ? false : 500
+  })
+
+  const {data: data2, isLoading: isLoading2} = trpc.getFileUploadStatus.useQuery({
+    fileId: fileId1,
   }, {
     refetchInterval: (data) => (data?.status === "SUCCESS" || data?.status === "FAILED") ? false : 500
   })
 
 
-  if(isLoading) return(
+
+  if(isLoading1 || isLoading2) return(
     <div className="relative min-h-full bgzinc-50 flex divide-y divide-zinc-200 flex-col justify-between gap-2">
       <div className="flex-1 flex justify-center items-center flex-col mb-28">
         <div className="flex flex-col items-center gap-2">
           <Loader2 className="h-8 w-8 text-blue-500 animate-spin"/>
           <h3 className="font-semibold text-xl">Loading...</h3>
           <p className="text-zinc-500 text-sm">
-            We&apos;re preparing your PDF.
+            We&apos;re preparing your PDFs.
           </p>
         </div>
       </div>
@@ -39,12 +47,12 @@ const ChatWrapper = ({fileId}: ChatWrapperProps) => {
     </div>
   )
 
-  if(data?.status === "PROCESSING") return(
+  if(data1?.status === "PROCESSING" || data2?.status === "PROCESSING") return(
     <div className="relative min-h-full bgzinc-50 flex divide-y divide-zinc-200 flex-col justify-between gap-2">
       <div className="flex-1 flex justify-center items-center flex-col mb-28">
         <div className="flex flex-col items-center gap-2">
           <Loader2 className="h-8 w-8 text-blue-500 animate-spin"/>
-          <h3 className="font-semibold text-xl">Processing PDF...</h3>
+          <h3 className="font-semibold text-xl">Processing PDFs...</h3>
           <p className="text-zinc-500 text-sm">
             This won&apos;t take long.
           </p>
@@ -57,7 +65,7 @@ const ChatWrapper = ({fileId}: ChatWrapperProps) => {
   )
 
   // Handle failed state (e.g. the PDF had more pages than allowed by the user's plan)
-  if(data?.status === "FAILED") return(
+  if(data1?.status === "FAILED" || data2?.status === "FAILED") return(
     <div className="relative min-h-full bgzinc-50 flex divide-y divide-zinc-200 flex-col justify-between gap-2">
       <div className="flex-1 flex justify-center items-center flex-col mb-28">
         <div className="flex flex-col items-center gap-2">
@@ -83,10 +91,10 @@ const ChatWrapper = ({fileId}: ChatWrapperProps) => {
   
 
   return (
-    <ChatContextProvider fileId={fileId}>
+    <ChatContextProvider fileId1={fileId1} fileId2={fileId2}>
       <div className="relative min-h-full bg-zinc-50 flex divide-y divide-zinc-200 flex-col justify-between gap-2">
         <div className="flex-1 justify-between flex flex-col mb-28">
-          <Messages fileId={fileId}/>
+          <Messages fileId1={fileId1} fileId2={fileId2}/>
         </div>
 
         <ChatInput />

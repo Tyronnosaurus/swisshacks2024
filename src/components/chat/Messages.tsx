@@ -32,17 +32,18 @@ const EmptyMessages = () => {
 
 
 interface MessagesProps {
-  fileId: string
+  fileId1: string,
+  fileId2: string
 }
 
 // Component that shows the chat messages (i.e. the conversation) between user and AI.
 // Starts showing only the most recent messages, and loads older messages as the user scrolls up.
-const Messages = ({fileId}: MessagesProps) => {
+const Messages = ({fileId1, fileId2}: MessagesProps) => {
 
   const {isLoading: isAiThinking} = useContext(ChatContext) // We name it isAiThinking to prevent a naming conflict
 
   const {data, isLoading, fetchNextPage} = trpc.getFileMessages.useInfiniteQuery({
-    fileId,
+    fileId: fileId1,
     limit: INFINITE_QUERY_LIMIT
   },{
     getNextPageParam: (lastPage) => lastPage?.nextCursor,

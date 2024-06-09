@@ -50,7 +50,7 @@ const Page = async ({params}: PageProps) => {
 
                 {/* Right side (or bottom on small screens) */}
                 <div className="shrink-0 flex-[0.75] border-t border-gray-200 lg:w-96 lg:border-l lg:border-t-0">
-                    <ChatWrapper fileId={file1.id}/>
+                    <ChatWrapper fileId1={file1.id} fileId2={file2.id}/>
                 </div>
             </div>
         </div>

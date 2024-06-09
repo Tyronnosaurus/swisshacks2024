@@ -26,13 +26,14 @@ export const ChatContext = createContext<StreamResponse>({
 
 
 interface ChatContextProviderProps {
-    fileId: string,
+    fileId1: string,
+    fileId2: string,
     children: ReactNode
 }
 
 
 // Provider component: it accepts a value prop which will be the data accessible to components that consume this context
-export const ChatContextProvider = ({fileId, children}: ChatContextProviderProps) => {
+export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextProviderProps) => {
     const [message, setMessage] = useState<string>("")
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -74,7 +75,7 @@ export const ChatContextProvider = ({fileId, children}: ChatContextProviderProps
             // For this we'll use the getFileMessages tRPC route, but instead of getInfiniteData which would get messages from the db,
             //we use setInfiniteData which lets us manually update the query's cached data.
             utils.getFileMessages.setInfiniteData(
-                {fileId, limit: INFINITE_QUERY_LIMIT},
+                {fileId1, limit: INFINITE_QUERY_LIMIT},
                 (old) => {
                     // Must return a {pages, pageParams} object
 
@@ -157,7 +158,7 @@ export const ChatContextProvider = ({fileId, children}: ChatContextProviderProps
 
                 // Append the chunk to the actual message
                 utils.getFileMessages.setInfiniteData(
-                    {fileId, limit: INFINITE_QUERY_LIMIT},
+                    {fileId1, limit: INFINITE_QUERY_LIMIT},
                     (old) => {
                         if(!old) return({pages: [], pageParams: []})
                         
@@ -216,7 +217,7 @@ export const ChatContextProvider = ({fileId, children}: ChatContextProviderProps
 
             // Restore conversation to how it was before we inserted the optimistic update
             utils.getFileMessages.setData(
-                {fileId},
+                {fileId1},
                 {messages: context?.previousMessages ?? []}
             )
         },
@@ -228,7 +229,7 @@ export const ChatContextProvider = ({fileId, children}: ChatContextProviderProps
             setIsLoading(false)
 
             //
-            await utils.getFileMessages.invalidate({ fileId })
+            await utils.getFileMessages.invalidate({ fileId1 })
         }
     })
 
