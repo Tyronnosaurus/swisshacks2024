@@ -22,6 +22,14 @@ export function absoluteUrl(path: string) {
 }
 
 
+// Given two fileIds, sort them alphabetically (so that the order of the given Ids doesn't matter), and return them combined into a single string
+//   clx6nzhjn000380ooguqz3lap, clx6nxsah000180oo3emd0dcl -> clx6nxsah000180oo3emd0dcl_clx6nzhjn000380ooguqz3lap
+export function combineFileIds(filedId1: string, fileId2: string) {
+
+  return [filedId1, fileId2].sort().join('_')
+
+}
+
 export function constructMetadata(
   {
     title = "Quill - voice of the documents",
