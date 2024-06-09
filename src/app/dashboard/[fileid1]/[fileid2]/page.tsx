@@ -6,24 +6,25 @@ import { notFound, redirect } from "next/navigation"
 
 interface PageProps {
     params: {
-        fileid: string
+        fileid1: string,
+        fileid2: string
     }
 }
 
 /** Given the file id of a PDF in the db, shows a page where on the left there's a PDF reader and on the right there's a chat to ask questions about the PDF. */
 const Page = async ({params}: PageProps) => {
 
-    const {fileid} = params
+    const {fileid1, fileid2} = params
 
     // Ensure user is logged in, otherwise redirect to login page
     const { getUser } = getKindeServerSession()
     const user = getUser()
-    if(!user || !user.id) redirect(`/auth-callback?origin=dashboard/${fileid}`) 
+    if(!user || !user.id) redirect(`/auth-callback?origin=dashboard/${fileid1}`) 
 
     // Get file info from the db. Make sure it belongs to the user logged in
     const file = await db.file.findFirst({
         where: {
-            id: fileid,
+            id: fileid1,
             userId: user.id
         }
     })

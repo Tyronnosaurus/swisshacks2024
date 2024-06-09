@@ -8,12 +8,14 @@ import { getUserSubscriptionPlan } from "@/lib/stripe"
 import PdfCard from "./PdfCard"
 import { Button } from "./ui/button"
 import { useState } from "react"
+import Link from "next/link"
 
 
 
 interface PageProps {
   subscriptionPlan: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
 }
+
 
 const Dashboard = ({subscriptionPlan}: PageProps) => {
 
@@ -67,7 +69,13 @@ const Dashboard = ({subscriptionPlan}: PageProps) => {
       )}
 
       <div className="w-full flex justify-center mt-8">
-        <Button disabled={selectedFiles.length !== 2}>Compare PDFs</Button>
+        {selectedFiles.length === 2 ? (
+          <Link href={`/dashboard/${selectedFiles[0]}/${selectedFiles[1]}`}>
+            <Button>Compare PDFs</Button>
+          </Link>
+        ) : (
+          <Button disabled>Compare PDFs</Button>
+        )}
       </div>
 
     </main>
