@@ -50,7 +50,7 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
         mutationFn: async ({message}: {message: string}) => {
             const response = await fetch('/api/message', {
                 method: 'POST',
-                body: JSON.stringify({fileId, message})
+                body: JSON.stringify({fileId1, message})
             })
             
             if(!response.ok) throw new Error("Failed to send message")
@@ -75,7 +75,7 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
             // For this we'll use the getFileMessages tRPC route, but instead of getInfiniteData which would get messages from the db,
             //we use setInfiniteData which lets us manually update the query's cached data.
             utils.getFileMessages.setInfiniteData(
-                {fileId1, limit: INFINITE_QUERY_LIMIT},
+                {fileId: fileId1, limit: INFINITE_QUERY_LIMIT},
                 (old) => {
                     // Must return a {pages, pageParams} object
 
@@ -158,7 +158,7 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
 
                 // Append the chunk to the actual message
                 utils.getFileMessages.setInfiniteData(
-                    {fileId1, limit: INFINITE_QUERY_LIMIT},
+                    {fileId: fileId1, limit: INFINITE_QUERY_LIMIT},
                     (old) => {
                         if(!old) return({pages: [], pageParams: []})
                         
@@ -217,7 +217,7 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
 
             // Restore conversation to how it was before we inserted the optimistic update
             utils.getFileMessages.setData(
-                {fileId1},
+                {fileId: fileId1},
                 {messages: context?.previousMessages ?? []}
             )
         },
@@ -229,7 +229,7 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
             setIsLoading(false)
 
             //
-            await utils.getFileMessages.invalidate({ fileId1 })
+            await utils.getFileMessages.invalidate({ fileId: fileId1 })
         }
     })
 
