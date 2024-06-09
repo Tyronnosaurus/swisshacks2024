@@ -19,7 +19,7 @@ const Page = async ({params}: PageProps) => {
     // Ensure user is logged in, otherwise redirect to login page
     const { getUser } = getKindeServerSession()
     const user = getUser()
-    if(!user || !user.id) redirect(`/auth-callback?origin=dashboard/${fileid1}`) 
+    if(!user || !user.id) redirect(`/auth-callback?origin=dashboard/${fileid1}/${fileid2}`) 
 
     // Get file info from the db. Make sure it belongs to the user logged in
     const file1 = await db.file.findFirst({
