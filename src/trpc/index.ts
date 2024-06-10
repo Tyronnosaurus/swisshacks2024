@@ -8,17 +8,19 @@ import { absoluteUrl } from '@/lib/utils';
 import { getUserSubscriptionPlan, stripe } from '@/lib/stripe';
 import { PLANS } from '@/config/stripe';
 
+
+// This file defines tRPC API endpoints
  
-// queries are for GET requests
-// mutations are for POST, UPDATE... requests
+// queries are for GET requests.
+// mutations are for POST, UPDATE and DELETE requests.
+
+// Public procedures can be used by anyone.
+// Private procedures can only be used by logged in users.
+
 
 export const appRouter = router({
 
-  // Public procedures can be used by everyone.
-  // Private procedures can only be used by logged in users.
-
-  // Public procedure to synchronize user auth service with database.
-  // If a user is logged in but not in the database, add them to the database. 
+  // Synchronize user who has logged in with external service (e.g. Kinde) to our database. If user is not in database, add them.
   authCallback: publicProcedure.query(async () => {
 
     // Get current logged in user
@@ -49,7 +51,10 @@ export const appRouter = router({
   }),
 
 
-  // Private procedure to get a user's uploaded PDFs
+  /////////////////////////////////////////////////////////////////
+
+
+  // Get a user's uploaded PDFs (as array of file info from the db, not the actual files from UploadThing)
   getUserFiles: privateProcedure.query(async ({ctx}) => {
     const { userId } = ctx
 
@@ -60,8 +65,126 @@ export const appRouter = router({
     })
   }),
 
+  /////////////////////////////////////////////////////////////////
 
-  // Private procedure to create a Stripe session for the user to upgrade his plan.
+  // Get a file's uploadStatus (PENDING, PROCESSING, FAILED or SUCCESS)
+  getFileUploadStatus: privateProcedure
+    .input(z.object({fileId: z.string()}))
+    .query(async ({input, ctx}) => {
+      const file = await db.file.findFirst({
+        where: {
+          id: input.fileId,
+          userId: ctx.userId
+        }
+      })
+
+      if(!file) return({status: "PENDING" as const})
+
+      return({status: file.uploadStatus})
+    }),
+
+  /////////////////////////////////////////////////////////////////
+
+  // Get a single file's info from the database.
+  getFile: privateProcedure
+    .input(z.object({key: z.string()}))
+    .mutation(async ({ctx, input}) => {
+      const {userId} = ctx
+
+      const file = await db.file.findFirst({
+        where: {
+          key: input.key,
+          userId
+        }
+      })
+
+      if(!file) throw new TRPCError({code:"NOT_FOUND"})
+
+      return(file)
+    }),
+
+  /////////////////////////////////////////////////////////////////
+
+  // Delete a single file's info from database (the file will still exist wherever it was uploaded to, i.e. UploadThing)
+  // Private procedure because only logged in users should be able to.
+  deleteFile: privateProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ctx, input}) => {
+      const {userId} = ctx
+
+      // Find file in db by its id (and make sure it belongs to the logged in user)
+      const file = await db.file.findFirst({where:{id:input.id, userId}})
+
+      // Throw error if file not found
+      if(!file) throw new TRPCError({code:"NOT_FOUND"})
+
+      // Delete file in db
+      await db.file.delete({where:{id: input.id}})
+
+      // Return deleted file (just in case, we don't need this for now)
+      return(file)
+    }),
+
+
+  /////////////////////////////////////////////////////////////////
+
+
+  // Fetch previous chat messages for a specific file, in an infinite query way:
+  // we can pass a cursor, and it will fetch N msgs starting at the Mth position going back in time.
+  getFileMessages: privateProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),  // Number of messages to get. Optional
+        cursor: z.string().nullish(),                 // Msg Id from which to start the batch. Optional, if not given we'll get the most recent msgs.
+        fileId: z.string()
+      })
+    )
+    .query(async({ctx, input}) => {
+      const {userId} = ctx 
+      const {fileId, cursor} = input
+      const limit = input.limit ?? INFINITE_QUERY_LIMIT // How many msgs to get per request. If not specified, a default value is used.
+
+      // Get file info from database
+      const file = await db.file.findFirst({
+        where: {
+          id: fileId,
+          userId
+        }
+      })
+
+      if(!file) throw new TRPCError({ code: 'NOT_FOUND' })
+
+      // Fetch msgs from database
+      const messages = await db.message.findMany({
+        take: limit + 1,  // Get one more than needed. We'll remove it but save its Id.
+        where: { fileId },
+        orderBy: { createdAt: "desc" },
+        cursor: cursor ? {id: cursor} : undefined,
+        select: {
+          id: true,
+          isUserMessage: true,
+          createdAt: true,
+          text: true
+        }
+      })
+
+      let nextCursor: typeof cursor | undefined = undefined
+
+      // If the db returned as many msgs as we requested, it means we haven't reached the oldest msg yet.
+      // Save the Id of the extra msg we added to the batch and discard it.
+      if(messages.length > limit) {
+        const nextItem = messages.pop()
+        nextCursor = nextItem?.id
+      }
+
+      return({messages, nextCursor})
+    }),
+
+
+  /////////////////////////////////////////////////////////////////
+
+
+  // Create a Stripe session for the user to upgrade his plan.
   // Returns link to Stripe checkout page.
   createStripeSession: privateProcedure.mutation(async ({ctx}) => {   
     
@@ -115,115 +238,7 @@ export const appRouter = router({
     })
 
     return({url: stripeSession.url})
-  }),
-
-
-  // Private procedure to fetch previous chat messages for a specific file, in an infinite query way:
-  // we can pass a cursor, and it will fetch N msgs starting at the Mth position going back in time.
-  getFileMessages: privateProcedure
-    .input(
-      z.object({
-        limit: z.number().min(1).max(100).nullish(),  // Number of messages to get. Optional
-        cursor: z.string().nullish(),                 // Msg Id from which to start the batch. Optional, if not given we'll get the most recent msgs.
-        fileId: z.string()
-      })
-    )
-    .query(async({ctx, input}) => {
-      const {userId} = ctx 
-      const {fileId, cursor} = input
-      const limit = input.limit ?? INFINITE_QUERY_LIMIT // How many msgs to get per request. If not specified, a default value is used.
-
-      // Get file info from database
-      const file = await db.file.findFirst({
-        where: {
-          id: fileId,
-          userId
-        }
-      })
-
-      if(!file) throw new TRPCError({ code: 'NOT_FOUND' })
-
-      // Fetch msgs from database
-      const messages = await db.message.findMany({
-        take: limit + 1,  // Get one more than needed. We'll remove it but save its Id.
-        where: { fileId },
-        orderBy: { createdAt: "desc" },
-        cursor: cursor ? {id: cursor} : undefined,
-        select: {
-          id: true,
-          isUserMessage: true,
-          createdAt: true,
-          text: true
-        }
-      })
-
-      let nextCursor: typeof cursor | undefined = undefined
-
-      // If the db returned as many msgs as we requested, it means we haven't reached the oldest msg yet.
-      // Save the Id of the extra msg we added to the batch and discard it.
-      if(messages.length > limit) {
-        const nextItem = messages.pop()
-        nextCursor = nextItem?.id
-      }
-
-      return({messages, nextCursor})
-    }),
-
-
-  // Get a file's uploadStatus (PENDING, PROCESSING, FAILED or SUCCESS)
-  getFileUploadStatus: privateProcedure
-    .input(z.object({fileId: z.string()}))
-    .query(async ({input, ctx}) => {
-      const file = await db.file.findFirst({
-        where: {
-          id: input.fileId,
-          userId: ctx.userId
-        }
-      })
-
-      if(!file) return({status: "PENDING" as const})
-
-      return({status: file.uploadStatus})
-    }),
-
-
-  // Private procedure to get a single file's info
-  getFile: privateProcedure
-    .input(z.object({key: z.string()}))
-    .mutation(async ({ctx, input}) => {
-      const {userId} = ctx
-
-      const file = await db.file.findFirst({
-        where: {
-          key: input.key,
-          userId
-        }
-      })
-
-      if(!file) throw new TRPCError({code:"NOT_FOUND"})
-
-      return(file)
-    }),
-
-
-  // Private procedure to delete a single file's info from database
-  deleteFile: privateProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(async ({ctx, input}) => {
-      const {userId} = ctx
-
-      // Find file in db by its id (and make sure it belongs to the logged in user)
-      const file = await db.file.findFirst({where:{id:input.id, userId}})
-
-      // Throw error if file not found
-      if(!file) throw new TRPCError({code:"NOT_FOUND"})
-
-      // Delete file in db
-      await db.file.delete({where:{id: input.id}})
-
-      // Return deleted file (just in case, we don't need this for now)
-      return(file)
-    })
+  })
 
 })
  

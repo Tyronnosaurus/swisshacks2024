@@ -7,7 +7,8 @@ const t = initTRPC.create();
 
 const middleware = t.middleware
 
-// Used to get logged in user's info, which will be avaiable as context in private procedures
+
+// Used to get logged in user's info, which will be available as context in private procedures
 const isAuth = middleware(async(opts) => {
 
     // Get current logged in user
