@@ -43,10 +43,12 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
 
     const backupMessage = useRef('') // Use useRef to not cause a re-render when it changes
 
+
     // Using the useMutation hook from react-query, prepare the sendMessage function.
     // The function uses the message API route.
     // It can't use tRPC because we want to stream back a response from the API to this client, and this wouldn't work with tRPC, only with JSON.
     const {mutate: sendMessage} = useMutation({
+        
         mutationFn: async ({message}: {message: string}) => {
             const response = await fetch('/api/message', {
                 method: 'POST',

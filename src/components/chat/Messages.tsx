@@ -15,11 +15,13 @@ interface MessagesProps {
 }
 
 // Component that shows the chat messages (i.e. the conversation) between user and AI.
-// Starts showing only the most recent messages, and loads older messages as the user scrolls up.
+// Starts showing only the most recent messages (if any), and loads older messages as the user scrolls up.
 const Messages = ({fileId1, fileId2}: MessagesProps) => {
 
+  // Load context to receive data from the chat input
   const {isLoading: isAiThinking} = useContext(ChatContext) // We name it isAiThinking to prevent a naming conflict
 
+  // Destructure trcp hook to load previous chat messages from the database (as an infinite query that keeps loading batches as we scroll up)
   const {data, isLoading, fetchNextPage} = trpc.getFileMessages.useInfiniteQuery({
     fileId: fileId1,
     limit: INFINITE_QUERY_LIMIT
@@ -29,8 +31,8 @@ const Messages = ({fileId1, fileId2}: MessagesProps) => {
   })
 
 
-  // The actual messages are inside of data, in the message field
-  // We use flatMap instead of map so that we don't have to work with an double array.
+  // The actual messages are inside of data, in the message field.
+  // We use flatMap instead of map so that we don't have to work with a double array.
   const messages = data?.pages.flatMap((page) => page.messages)
 
 
