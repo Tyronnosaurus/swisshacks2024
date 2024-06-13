@@ -6,6 +6,7 @@ import { ChatContext } from "./ChatContext"
 import { Loader2 } from "lucide-react"
 import { useIntersection } from '@mantine/hooks'
 import { EmptyMessages, SkeletonMessages } from "./MessagesPlaceholders"
+import { combineFileIds } from "@/lib/utils"
 
 
 
@@ -23,7 +24,7 @@ const Messages = ({fileId1, fileId2}: MessagesProps) => {
 
   // Destructure trcp hook to load previous chat messages from the database (as an infinite query that keeps loading batches as we scroll up)
   const {data, isLoading, fetchNextPage} = trpc.getFileMessages.useInfiniteQuery({
-    fileId: fileId1,
+    fileId: combineFileIds(fileId1, fileId2),
     limit: INFINITE_QUERY_LIMIT
   },{
     getNextPageParam: (lastPage) => lastPage?.nextCursor,

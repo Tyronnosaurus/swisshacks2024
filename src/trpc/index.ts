@@ -145,14 +145,28 @@ export const appRouter = router({
       const limit = input.limit ?? INFINITE_QUERY_LIMIT // How many msgs to get per request. If not specified, a default value is used.
 
       // Get file info from database
-      const file = await db.file.findFirst({
+
+      const [fileId1, fileId2] = fileId.split("_")
+
+      const file1 = await db.file.findFirst({
         where: {
-          id: fileId,
+          id: fileId1,
           userId
         }
       })
 
-      if(!file) throw new TRPCError({ code: 'NOT_FOUND' })
+      if(!file1) throw new TRPCError({ code: 'NOT_FOUND' })
+
+      const file2 = await db.file.findFirst({
+        where: {
+          id: fileId2,
+          userId
+        }
+      })
+
+      if(!file2) throw new TRPCError({ code: 'NOT_FOUND' })
+
+
 
       // Fetch msgs from database
       const messages = await db.message.findMany({

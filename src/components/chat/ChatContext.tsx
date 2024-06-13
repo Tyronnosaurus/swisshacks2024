@@ -7,6 +7,7 @@ import { useToast } from "../ui/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { trpc } from "@/app/_trpc/client";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
+import { combineFileIds } from "@/lib/utils";
 
 
 type StreamResponse = {
@@ -37,6 +38,8 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
     const [message, setMessage] = useState<string>("")
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
+    const combinedFileId = combineFileIds(fileId1, fileId2)
+
     const utils = trpc.useUtils() // For the optimistic updates
 
     const {toast} = useToast()
@@ -52,7 +55,7 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
         mutationFn: async ({message}: {message: string}) => {
             const response = await fetch('/api/message', {
                 method: 'POST',
-                body: JSON.stringify({fileId1, message})
+                body: JSON.stringify({combinedFileId, message})
             })
             
             if(!response.ok) throw new Error("Failed to send message")
@@ -77,7 +80,7 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
             // For this we'll use the getFileMessages tRPC route, but instead of getInfiniteData which would get messages from the db,
             //we use setInfiniteData which lets us manually update the query's cached data.
             utils.getFileMessages.setInfiniteData(
-                {fileId: fileId1, limit: INFINITE_QUERY_LIMIT},
+                {fileId: combinedFileId, limit: INFINITE_QUERY_LIMIT},
                 (old) => {
                     // Must return a {pages, pageParams} object
 
@@ -160,7 +163,7 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
 
                 // Append the chunk to the actual message
                 utils.getFileMessages.setInfiniteData(
-                    {fileId: fileId1, limit: INFINITE_QUERY_LIMIT},
+                    {fileId: combinedFileId, limit: INFINITE_QUERY_LIMIT},
                     (old) => {
                         if(!old) return({pages: [], pageParams: []})
                         
@@ -219,7 +222,7 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
 
             // Restore conversation to how it was before we inserted the optimistic update
             utils.getFileMessages.setData(
-                {fileId: fileId1},
+                {fileId: combinedFileId},
                 {messages: context?.previousMessages ?? []}
             )
         },
@@ -231,7 +234,7 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
             setIsLoading(false)
 
             //
-            await utils.getFileMessages.invalidate({ fileId: fileId1 })
+            await utils.getFileMessages.invalidate({ fileId: combinedFileId })
         }
     })
 
