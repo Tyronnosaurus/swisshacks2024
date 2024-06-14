@@ -26,7 +26,7 @@ const ChatInput = ({isDisabled}: ChatInputProps) => {
 
                 <Textarea
                   ref={textAreaRef}
-                  placeholder="Your question goes here"
+                  placeholder="What subject would you like to compare between the two reports?"
                   autoFocus  // Place cursor inside input on pageload
                   onKeyDown={(e) => {if (e.key==="Enter" && !e.shiftKey){
                                       e.preventDefault()
