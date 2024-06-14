@@ -58,7 +58,7 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
 
             const response = await fetch('/api/message', {
                 method: 'POST',
-                body: JSON.stringify({combinedFileId, message})
+                body: JSON.stringify({fileId: combinedFileId, message})
             })
             
             if(!response.ok) throw new Error("Failed to send message")
