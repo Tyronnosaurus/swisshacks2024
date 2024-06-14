@@ -25,6 +25,7 @@ export const ChatContext = createContext<StreamResponse>({
     isLoading: false
 })
 
+///////////////////////////////////////////////////
 
 interface ChatContextProviderProps {
     fileId1: string,
@@ -35,6 +36,7 @@ interface ChatContextProviderProps {
 
 // Provider component: it accepts a value prop which will be the data accessible to components that consume this context
 export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextProviderProps) => {
+
     const [message, setMessage] = useState<string>("")
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -50,9 +52,10 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
     // Using the useMutation hook from react-query, prepare the sendMessage function.
     // The function uses the message API route.
     // It can't use tRPC because we want to stream back a response from the API to this client, and this wouldn't work with tRPC, only with JSON.
-    const {mutate: sendMessage} = useMutation({
+    const {mutate: sendMessage} = useMutation({ // Destructure the 'mutate' function from useMutation and rename it to 'sendMessage'
         
         mutationFn: async ({message}: {message: string}) => {
+
             const response = await fetch('/api/message', {
                 method: 'POST',
                 body: JSON.stringify({combinedFileId, message})
@@ -243,7 +246,7 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
         setMessage(e.target.value)
     }
 
-
+    // Function run when user clicks Send or presses Enter. Sends the message
     const addMessage = () => sendMessage({message})
 
 

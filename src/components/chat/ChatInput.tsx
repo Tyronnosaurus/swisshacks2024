@@ -34,7 +34,7 @@ const ChatInput = ({isDisabled}: ChatInputProps) => {
                                       textAreaRef.current?.focus()  // Prevent text input from losing focus
                                      }
                   }}
-                  onChange={handleInputChange}
+                  onChange={handleInputChange}  // Whenever the text changes, it is saved with useState inside the ChatContext
                   value={message}
                   rows={1}
                   maxRows={4}
