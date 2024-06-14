@@ -228,6 +228,13 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
                 {fileId: combinedFileId},
                 {messages: context?.previousMessages ?? []}
             )
+
+            // Show toast with error message
+            toast({
+                title: "There was a problem sending the message",
+                description: "Please refresh the page and try again",
+                variant: "destructive"
+            })
         },
 
         // Triggers when the mutation is either successful or encounters an error. Is passed either the data or error
