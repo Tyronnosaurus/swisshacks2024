@@ -32,8 +32,8 @@ export function combineFileIds(filedId1: string, fileId2: string) {
 
 export function constructMetadata(
   {
-    title = "Quill - voice of the documents",
-    description = "Quill is an open-source software to make chatting to your PDF files easy.",
+    title = "Aresight - Compare Annual Reports",
+    description = "Aresight is a tool to analyze the evolution of companies through their Annual Reports in a user-friendly way.",
     image = "/thumbnail.png",
     icons = "/favicon.ico",
     noIndex = false
