@@ -38,7 +38,7 @@ export const POST = async (req: NextRequest) => {
     const prevMessages = await db.message.findMany({
         where: {fileId: fileId},
         orderBy: { createdAt: "asc"},
-        take: 6
+        take: 2
     })
 
     // Format them in a way that can be used in the OpenAI prompt
@@ -115,9 +115,9 @@ export const POST = async (req: NextRequest) => {
         },
         {
           role: 'user',
-          content: `Use the following two pieces of context (or previous conversaton if needed) and the subject given by the user to find data
-                    related to the subject and summarize the differences between the contexts. Give a response in markdown format. \n
-                    If you don't know the answer, just say that you don't know, don't try to make up an answer.
+          content: `Write a summary of the differences between the two contexts involving the input specified by the user.
+                    You may also use the previous conversation. Write only the conclusion.
+                    Give a response in markdown format. If you don't know the answer, just say that you don't know, don't try to make up an answer.
                     \n----------------\n
                     PREVIOUS CONVERSATION:
                     ${formattedPrevMessages.map((message) => {
@@ -131,7 +131,7 @@ export const POST = async (req: NextRequest) => {
                     CONTEXT 2:
                     ${results2.map((r) => r.pageContent).join('\n\n')}
                     \n
-                    USER INPUT: ${message}`
+                    USER'S INPUT: ${message}`
         }
     ]
 
