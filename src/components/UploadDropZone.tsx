@@ -8,12 +8,11 @@ import { Progress } from './ui/progress'
 import { useUploadThing } from "@/lib/uploadthing"
 import { useToast } from "./ui/use-toast"
 import { trpc } from "@/app/_trpc/client"
-import { useRouter } from "next/navigation"
 
 
 interface UploadDropZoneProps {
     isSubscribed: boolean,
-    setIsOpen: (isOpen: boolean) => void;
+    setIsOpen: (isOpen: boolean) => void
 }
 
 

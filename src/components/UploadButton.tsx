@@ -5,8 +5,14 @@ import { useState } from "react"
 import { Button } from "./ui/button"
 import UploadDropZone from "./UploadDropZone"
 
+
+interface UploadButtonProps {
+    isSubscribed: boolean,
+}
+
+
 /** Button to open a modal where the user can upload a file */
-const UploadButton = ({isSubscribed}: {isSubscribed: boolean}) => {
+const UploadButton = ({isSubscribed}: UploadButtonProps) => {
 
     const [isOpen, setIsOpen] = useState<boolean>(false)
   
