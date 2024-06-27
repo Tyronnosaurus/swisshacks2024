@@ -11,8 +11,14 @@ import { trpc } from "@/app/_trpc/client"
 import { useRouter } from "next/navigation"
 
 
+interface UploadDropZoneProps {
+    isSubscribed: boolean,
+    setIsOpen: (isOpen: boolean) => void;
+}
+
+
 /** Modal for the user to upload files. Has a button to open a file dialog, a drop zone, a progress bar, and a toast to show success or fail */
-const UploadDropZone = ({isSubscribed}: {isSubscribed: boolean}) => {
+const UploadDropZone = ({isSubscribed, setIsOpen}: UploadDropZoneProps) => {
 
     const [isUploading, setIsUploading] = useState<boolean>(false)
     const [uploadProgress, setUploadProgress] = useState<number>(0)
@@ -21,12 +27,10 @@ const UploadDropZone = ({isSubscribed}: {isSubscribed: boolean}) => {
 
     const {toast} = useToast()
 
-    const router = useRouter()
-
     const {mutate: startPolling} = trpc.getFile.useMutation({
         onSuccess: (file) => {
-            // When file is successfully uploaded, redirect user to its chat page
-            router.push(`/dashboard/${file.id}`)
+            // When file is successfully uploaded, close the Upload popup
+            setIsOpen(false)
         },
         retry: true,
         retryDelay: 1000

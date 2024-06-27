@@ -21,7 +21,7 @@ const UploadButton = ({isSubscribed}: {isSubscribed: boolean}) => {
             </DialogTrigger>
 
             <DialogContent>
-                <UploadDropZone isSubscribed={isSubscribed} />
+                <UploadDropZone isSubscribed={isSubscribed} setIsOpen={setIsOpen}/>
             </DialogContent>
         </Dialog>
     )
