@@ -26,13 +26,21 @@ const UploadDropZone = ({isSubscribed, setIsOpen}: UploadDropZoneProps) => {
 
     const {toast} = useToast()
 
-    const {mutate: startPolling} = trpc.getFile.useMutation({
+    // Runs at the end of file upload. Tries to get the file to confirm that it uploaded correctly
+    const {mutate: tryGetFile} = trpc.getFile.useMutation({
         onSuccess: (file) => {
-            // When file is successfully uploaded, close the Upload popup
+            // After confirming that file has been successfully uploaded, close the Upload popup
             setIsOpen(false)
             utils.getUserFiles.invalidate() // Forces file list to refresh
         },
-        retry: true,
+        onError: () => {
+            toast({
+                title: "Something went wrong",
+                description: "Please refresh the page and try again",
+                variant: "destructive"
+            })
+        },
+        retry: 10,
         retryDelay: 1000
     })
 
@@ -90,7 +98,8 @@ const UploadDropZone = ({isSubscribed, setIsOpen}: UploadDropZoneProps) => {
                             clearInterval(progressInterval)
                             setUploadProgress(100)
 
-                            startPolling({ key })
+                            // Try to request the uploaded file to confirm upload was successful
+                            tryGetFile({ key })
                         }}>
             {({getRootProps, getInputProps, acceptedFiles}) => (
                 <div {...getRootProps()} className="border h-64 m-4 border-dashed border-gray-300 rounded-lg">
