@@ -35,13 +35,13 @@ interface onUploadCompleteProps {
 const onUploadComplete = async ({metadata, file}: onUploadCompleteProps) => {
 
   // Prevent bug in which sometimes this callback gets called twice after file upload finishes
-  const fileExists = await db.file.findFirst({
+  const fileAlreadyExists = await db.file.findFirst({
     where: {
       key: file.key
     }
   })
 
-  if (fileExists) return
+  if (fileAlreadyExists) return
 
   // Once we finish uploading, add a File entry to our database
   //(with a PROCESSING status since we still have to parse it)
