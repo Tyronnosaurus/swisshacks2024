@@ -30,6 +30,7 @@ const UploadDropZone = ({isSubscribed, setIsOpen}: UploadDropZoneProps) => {
         onSuccess: (file) => {
             // When file is successfully uploaded, close the Upload popup
             setIsOpen(false)
+            utils.getUserFiles.invalidate() // Forces file list to refresh
         },
         retry: true,
         retryDelay: 1000
@@ -52,6 +53,8 @@ const UploadDropZone = ({isSubscribed, setIsOpen}: UploadDropZoneProps) => {
 
         return(interval)
     }
+
+    const utils = trpc.useContext()
 
 
     return(
