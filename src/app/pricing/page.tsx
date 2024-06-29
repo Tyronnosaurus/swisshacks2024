@@ -22,11 +22,11 @@ const Page = () => {
           pdfsPerMonth: 10,
           features: [
             {
-              text: '5 pages per PDF',
+              text: '1000 pages per PDF',
               tooltip: 'The maximum amount of pages per PDF-file.',
             },
             {
-              text: '4MB file size limit',
+              text: '5MB file size limit',
               tooltip: 'The maximum file size of a single PDF file.',
             },
             {
@@ -49,11 +49,11 @@ const Page = () => {
           pdfsPerMonth: PLANS.find((p) => p.slug === 'pro')!.pdfsPerMonth,
           features: [
             {
-              text: '25 pages per PDF',
+              text: '1000 pages per PDF',
               tooltip: 'The maximum amount of pages per PDF-file.',
             },
             {
-              text: '16MB file size limit',
+              text: '256MB file size limit',
               tooltip: 'The maximum file size of a single PDF file.',
             },
             {
