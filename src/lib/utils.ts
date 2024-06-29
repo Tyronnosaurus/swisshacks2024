@@ -32,8 +32,8 @@ export function combineFileIds(filedId1: string, fileId2: string) {
 
 export function constructMetadata(
   {
-    title = "Aresight - Compare Annual Reports",
-    description = "Aresight is a tool to analyze the evolution of companies through their Annual Reports in a user-friendly way.",
+    title = "Catalyst - Compare Annual Reports",
+    description = "Catalyst is a tool to analyze the evolution of companies through their Annual Reports in a user-friendly way.",
     image = "/thumbnail.png",
     icons = "/favicon.ico",
     noIndex = false

@@ -5,6 +5,7 @@ import { buttonVariants } from './ui/button'
 import { LoginLink, RegisterLink, getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import UserAccountNav from './UserAccountNav'
 import MobileNav from './MobileNav'
+import Image from 'next/image'
 
 const Navbar = () => {
 
@@ -16,7 +17,8 @@ const Navbar = () => {
       <MaxWidthWrapper>
         <div className='flex h-14 items-center justify-between border-b border-zinc-200'>
             <Link href="/" className="flex z-40 font-semibold">
-                <span>Aresight</span>
+            <Image height={18} width={30} src="/icon.png" alt="" />
+                <span>&nbsp;&nbsp; Catalyst</span>
             </Link>
             
             <MobileNav isAuth={!!user}/>
