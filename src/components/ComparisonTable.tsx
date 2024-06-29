@@ -25,6 +25,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Data {
     [section: string]: {
@@ -77,13 +78,10 @@ const kpiSchema = z.object({
 
 type KpiFormData = z.infer<typeof kpiSchema>;
 
-
-
-const ComparisonTable: React.FC<{file1: string, file2:string}> = ({file1,file2}) => {
+const ComparisonTable: React.FC<{ file1: string; file2: string }> = ({ file1, file2 }) => {
     const [selectedSuggestion, setSelectedSuggestion] = useState("");
     const [isOpen, setIsOpen] = useState(false);
-
-    console.log("FILES", file1, file2)
+    const [kpiData, setKpiData] = useState<Data>(data);
 
     const form = useForm<KpiFormData>({
         resolver: zodResolver(kpiSchema),
@@ -92,7 +90,7 @@ const ComparisonTable: React.FC<{file1: string, file2:string}> = ({file1,file2})
         },
     });
 
-    const calculateKpi = async ({ fileid1,fileid2, kpiName }: { fileid1:string,fileid2: string; kpiName: string }) => {
+    const calculateKpi = async ({ fileid1, fileid2, kpiName }: { fileid1: string; fileid2: string; kpiName: string }) => {
         const response = await fetch('/api/calculator', {
             method: 'POST',
             body: JSON.stringify({ fileid1, fileid2, kpiName }),
@@ -102,12 +100,21 @@ const ComparisonTable: React.FC<{file1: string, file2:string}> = ({file1,file2})
             throw new Error('Failed to calculate KPI');
         }
 
-        const result = await response.text();
+        const result = await response.json();
         return result;
     };
 
     const { mutate: calculateKpiMutation, data: kpiResult, isLoading } = useMutation(calculateKpi, {
         onSuccess: (data) => {
+            const newKpiData = { ...kpiData };
+            const section = "custom"; // Add a new section for custom KPIs
+            newKpiData[section] = newKpiData[section] || {};
+
+            data.fileid1.forEach((component: any, index: number) => {
+                newKpiData[section][`${component.component_name}`] = [component.value, data.fileid2[index].value];
+            });
+
+            setKpiData(newKpiData);
             setIsOpen(false);
         },
         onError: (error: any) => {
@@ -121,13 +128,13 @@ const ComparisonTable: React.FC<{file1: string, file2:string}> = ({file1,file2})
     };
 
     const handleFormSubmit: SubmitHandler<KpiFormData> = (data) => {
-        calculateKpiMutation({ fileId: 'file1_file2', kpiName: data.kpiName });
+        calculateKpiMutation({ fileid1: file1, fileid2: file2, kpiName: data.kpiName });
     };
 
     return (
         <div className="container mx-auto p-4">
             <h2 className="text-2xl font-bold mb-4">Company Comparison</h2>
-            {Object.entries(data).map(([section, kpis]) => (
+            {Object.entries(kpiData).map(([section, kpis]) => (
                 <div key={section} className="mb-8">
                     <h3 className="text-xl font-semibold mb-2 capitalize">{section}</h3>
                     <Table>
@@ -142,8 +149,8 @@ const ComparisonTable: React.FC<{file1: string, file2:string}> = ({file1,file2})
                             {Object.entries(kpis).map(([kpi, values]) => (
                                 <TableRow key={kpi}>
                                     <TableCell>{kpi}</TableCell>
-                                    <TableCell>{formatValue(values[0])}</TableCell>
-                                    <TableCell>{formatValue(values[1])}</TableCell>
+                                    <TableCell>{isLoading ? <Skeleton className="h-4 w-full" /> : formatValue(values[0])}</TableCell>
+                                    <TableCell>{isLoading ? <Skeleton className="h-4 w-full" /> : formatValue(values[1])}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -185,7 +192,7 @@ const ComparisonTable: React.FC<{file1: string, file2:string}> = ({file1,file2})
                         {kpiResult && (
                             <div className="mt-4 p-4 border rounded">
                                 <h3 className="font-semibold">KPI Calculation Result</h3>
-                                <pre>{kpiResult}</pre>
+                                <pre>{JSON.stringify(kpiResult, null, 2)}</pre>
                             </div>
                         )}
                     </DrawerContent>

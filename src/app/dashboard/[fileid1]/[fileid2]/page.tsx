@@ -59,7 +59,9 @@ const Page = async ({params}: PageProps) => {
                 <Tabs defaultValue="pdfs" className="">
   <TabsList >
     <TabsTrigger value="pdfs">Reports visualizer</TabsTrigger>
-    <TabsTrigger value="password">Tables</TabsTrigger>
+    <TabsTrigger value="benchmarking">Benchmarking</TabsTrigger>
+    <TabsTrigger value="graphs">Graphs</TabsTrigger>
+
   </TabsList>
   <div className="flex max-h-[calc(100vh-10.5rem)] border-zinc-200 flex-1 flex-col-reverse gap-4 p-3 overflow-y-auto
                     scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
@@ -69,7 +71,7 @@ const Page = async ({params}: PageProps) => {
                     <PdfRenderer url={file2.url}/>
                     </div>
   </TabsContent>
-  <TabsContent value="password">
+  <TabsContent value="benchmarking">
 
 
 <ComparisonTable file1={file1.id}  file2={file2.id}/>
@@ -77,7 +79,9 @@ const Page = async ({params}: PageProps) => {
 
 
   </TabsContent>
-  </div>
+<TabsContent value="graphs">
+    
+    </TabsContent>  </div>
 
 </Tabs>
                 

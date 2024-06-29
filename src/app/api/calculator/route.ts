@@ -36,8 +36,6 @@ export const POST = async (req: NextRequest) => {
         console.log("fileid:", fileid1, fileid2, "kpiName:", kpiName);
 
         // Fetch the files' info from the database (to confirm they exist and belong to the actual logged in user)
-        console.log("fileid1:", fileid1, "fileid2:", fileid2);
-
         const file1 = await db.file.findFirst({
             where: {
                 id: fileid1,
@@ -113,7 +111,10 @@ Please try to condense (where possible) formula components. For example if you h
 
             console.log("Formula response:", JSON.stringify(formulaResponse, null, 2));
 
-            const formulaAndComponents = JSON.parse(formulaResponse.choices[0].message?.content || "{}");
+            // Remove the backticks from the content before parsing
+            const formulaContent = formulaResponse.choices[0].message?.content || "";
+            const cleanedContent = formulaContent.replace(/```json|```/g, "");
+            const formulaAndComponents = JSON.parse(cleanedContent);
 
             const schema = z.object({
                 formula: z.object({
@@ -131,30 +132,32 @@ Please try to condense (where possible) formula components. For example if you h
             return schema.parse(formulaAndComponents);
         };
 
-        const searchComponentValues = async (vectorStore: PineconeStore, component: any, alternates: string[]) => {
+        const searchComponentValues = async (vectorStore: PineconeStore, component: any, alternates: string[], fileName: string) => {
             const componentSearchPrompt = `Find information related to the following component or its alternates in the context provided. 
 
             COMPONENT:
-            ${JSON.stringify(component)}`
-    
+            ${component.name}
+            ALTERNATES:
+            ${alternates.join(", ")}`;
 
             const componentResults = await vectorStore.similaritySearch(componentSearchPrompt, 10) as PineconeResult[];
             const componentContent = componentResults.map((r: PineconeResult) => r.pageContent).join('\n\n');
+            console.log(`Contexts for component "${component.name}" in file ${fileName}:`, componentContent);
 
-            const extractionPrompt = `Extract the value for the component "${JSON.stringify(component)}" from the following context:
+            const extractionPrompt = `Extract the value for the component "${component.name}" from the following context:
 
-                CONTEXT:
-                ${componentContent}
+CONTEXT:
+${componentContent}
 
-                Provide the response in the following JSON format:
-                {
-                    "component_name": "name of the component (e.g., total revenue)",
-                    "value": "extracted value",
-                    "type": "data type (e.g., money, percentage, etc.)"
-                }
+Provide the response in the following JSON format:
+{
+    "component_name": "name of the component (e.g., total revenue)",
+    "value": "extracted value",
+    "type": "data type (e.g., money, percentage, etc.)"
+}
 
-                Please make sure to check for all the alternate names, and add in the component_name, the name under which you found that value since different reports often have different names.
-                If you do not find the EXACT value for that component, put the closest value, but under NO circumstance invent it.` ;
+Please make sure to check for all the alternate names, and add in the component_name, the name under which you found that value since different reports often have different names.
+If you do not find the EXACT value for that component, put the closest value, but under NO circumstance invent it.`;
 
             const extractionResponse = await openai.chat.completions.create({
                 model: "gpt-4o",
@@ -169,9 +172,11 @@ Please try to condense (where possible) formula components. For example if you h
                     }
                 ]
             });
-            console.log(`Extraction response for component "${component.name}":`, JSON.stringify(extractionResponse, null, 2));
+            console.log(`Extraction response for component "${component.name}" in file ${fileName}:`, JSON.stringify(extractionResponse, null, 2));
 
-            return JSON.parse(extractionResponse.choices[0].message?.content || "{}");
+            const extractionContent = extractionResponse.choices[0].message?.content || "";
+            const cleanedExtractionContent = extractionContent.replace(/```json|```/g, "");
+            return JSON.parse(cleanedExtractionContent);
         };
 
         const { formula } = await extractFormulaAndComponents(kpiName);
@@ -191,13 +196,13 @@ Please try to condense (where possible) formula components. For example if you h
         // Perform similarity searches for each component in both files
         const componentValuesFile1 = await Promise.all(
             formula.components.map(async (component) => {
-                return await searchComponentValues(vectorStore1, component, component.alternates);
+                return await searchComponentValues(vectorStore1, component, component.alternates, file1.id);
             })
         );
 
         const componentValuesFile2 = await Promise.all(
             formula.components.map(async (component) => {
-                return await searchComponentValues(vectorStore2, component, component.alternates);
+                return await searchComponentValues(vectorStore2, component, component.alternates, file2.id);
             })
         );
 
