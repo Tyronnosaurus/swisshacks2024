@@ -6,6 +6,7 @@ import { LoginLink, RegisterLink, getKindeServerSession } from '@kinde-oss/kinde
 import UserAccountNav from './UserAccountNav'
 import MobileNav from './MobileNav'
 import Image from 'next/image'
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from './ui/navigation-menu'
 
 const Navbar = () => {
 
@@ -34,19 +35,19 @@ const Navbar = () => {
                   <>
                       <Link href="/dashboard" className={buttonVariants({variant:"ghost", size:'sm'})}>Dashboard</Link>
                       <NavigationMenu>
-  <NavigationMenuList>
-    <NavigationMenuItem>
-      <NavigationMenuTrigger>Insights</NavigationMenuTrigger>
-      <NavigationMenuContent>
-      <Link href="/insights/company-analysis" legacyBehavior passHref>
-    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-      Documentation
-    </NavigationMenuLink>
-  </Link>
-      </NavigationMenuContent>
-    </NavigationMenuItem>
-  </NavigationMenuList>
-</NavigationMenu>
+                        <NavigationMenuList>
+                          <NavigationMenuItem>
+                            <NavigationMenuTrigger>Insights</NavigationMenuTrigger>
+                            <NavigationMenuContent>
+                            <Link href="/insights/company-analysis" legacyBehavior passHref>
+                          <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                            Documentation
+                          </NavigationMenuLink>
+                        </Link>
+                            </NavigationMenuContent>
+                          </NavigationMenuItem>
+                        </NavigationMenuList>
+                      </NavigationMenu>
 
                       <UserAccountNav
                         name={!user.given_name || !user.family_name ? "Your Account" : `${user.given_name} ${user.family_name}`}
