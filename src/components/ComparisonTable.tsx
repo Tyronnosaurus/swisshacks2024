@@ -1,15 +1,26 @@
 "use client"
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
     TableRow,
-  } from "@/components/ui/table"
-
+} from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from "@/components/ui/drawer"
+import { ChevronRight, ChevronsRight, PlusCircle, PlusIcon } from 'lucide-react';
 
 interface Data {
     [section: string]: {
@@ -54,6 +65,12 @@ const formatValue = (value: number | string) => {
     return value;
 };
 
+const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // Handle form submission
+    console.log("Form submitted");
+};
+
 const ComparisonTable: React.FC = () => {
     return (
         <div className="container mx-auto p-4">
@@ -62,7 +79,7 @@ const ComparisonTable: React.FC = () => {
                 <div key={section} className="mb-8">
                     <h3 className="text-xl font-semibold mb-2 capitalize">{section}</h3>
                     <Table>
-                        <TableHeader>
+                        <TableHeader className="sticky top-0 bg-white z-10">
                             <TableRow>
                                 <TableHead>KPI</TableHead>
                                 <TableHead>Company A</TableHead>
@@ -81,6 +98,32 @@ const ComparisonTable: React.FC = () => {
                     </Table>
                 </div>
             ))}
+            <div className="flex justify-end mt-4">
+                <Drawer>
+                    <DrawerTrigger asChild>
+                    <Button variant="outline" size="icon">
+      <PlusIcon className="h-4 w-4" />
+    </Button>
+                    </DrawerTrigger>
+                    <DrawerContent className='flex flex-col justify-items-center justify-center items-center  space-y-4'>
+                        <DrawerHeader>
+                            <DrawerTitle>Add New KPI</DrawerTitle>
+                            <DrawerDescription>Enter details for the new KPI.</DrawerDescription>
+                        </DrawerHeader>
+                        <form onSubmit={handleFormSubmit} className="">
+                            <Input placeholder="Enter KPI name" />
+                            <Input placeholder="Enter value for Company A" />
+                            <Input placeholder="Enter value for Company B" />
+                            <DrawerFooter>
+                                <Button type="submit">Submit</Button>
+                                <DrawerClose asChild>
+                                    <Button variant="outline">Cancel</Button>
+                                </DrawerClose>
+                            </DrawerFooter>
+                        </form>
+                    </DrawerContent>
+                </Drawer>
+            </div>
         </div>
     );
 };
