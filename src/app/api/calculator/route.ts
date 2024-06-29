@@ -79,21 +79,21 @@ Provide the response in the following JSON format like in this example:
 {
     "formula": {
         "kpi_name": "fake_kpi_name",
-        "formula_js": "total revenue / total assets",
+        "formula_js": "total_revenue / total_assets",
         "components": [
             {
-                "name": "total revenue",
-                "alternates": ["revenue", "total revenue", "total sales","sales", ]
+                "name": "total_revenue",
+                "alternates": ["revenue", "total revenue", "total sales", "sales"]
             },
             {
-                "name": "total assets",
+                "name": "total_assets",
                 "alternates": ["assets"]
             }
         ]
     }
 }
-    
-Please try to condense (where possible) formula components. For example if you have "cash and cash equivalents", do not separate them into "cash" and "cash equivalents", just put it as an alternate name, such as "alternates": ["cash and cash equivalents", "cash", "cash equivalents" ]`;
+
+Please try to condense (where possible) formula components. For example if you have "cash and cash equivalents", do not separate them into "cash" and "cash equivalents", just put it as an alternate name, such as "alternates": ["cash and cash equivalents", "cash", "cash equivalents"]`;
 
             const formulaResponse = await openai.chat.completions.create({
                 model: "gpt-4o",
@@ -195,21 +195,46 @@ If you do not find the EXACT value for that component, put the closest value, bu
 
         // Perform similarity searches for each component in both files
         const componentValuesFile1 = await Promise.all(
-            formula.components.map(async (component) => {
+            formula.components.map(async (component: any) => {
                 return await searchComponentValues(vectorStore1, component, component.alternates, file1.id);
             })
         );
 
         const componentValuesFile2 = await Promise.all(
-            formula.components.map(async (component) => {
+            formula.components.map(async (component: any) => {
                 return await searchComponentValues(vectorStore2, component, component.alternates, file2.id);
             })
         );
 
+        const parseValue = (value: string | number) => {
+            if (typeof value === 'number') {
+                return value;
+            }
+            return parseFloat(value.replace(/,/g, ''));
+        };
+
+        const calculateKpiValue = (formula: any, file1Values: any[], file2Values: any[]) => {
+            const file1KpiValue = new Function(...formula.components.map((component: any) => component.name), `return ${formula.formula_js}`)(
+                ...formula.components.map((component: any) => parseValue(file1Values.find(val => val.component_name.includes(component.name))?.value || 0))
+            );
+
+            const file2KpiValue = new Function(...formula.components.map((component: any) => component.name), `return ${formula.formula_js}`)(
+                ...formula.components.map((component: any) => parseValue(file2Values.find(val => val.component_name.includes(component.name))?.value || 0))
+            );
+
+            return { file1KpiValue, file2KpiValue };
+        };
+
+        const { file1KpiValue, file2KpiValue } = calculateKpiValue(formula, componentValuesFile1, componentValuesFile2);
+
         const finalResponse = {
             formula,
             fileid1: componentValuesFile1,
-            fileid2: componentValuesFile2
+            fileid2: componentValuesFile2,
+            kpiResults: {
+                file1: file1KpiValue,
+                file2: file2KpiValue
+            }
         };
 
         console.log("Final response:", JSON.stringify(finalResponse, null, 2));
