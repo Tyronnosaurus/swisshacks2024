@@ -38,7 +38,7 @@ export default function Home() {
         {/* Preview image */}
         <div className="mx-auto max-w-6xl px-6 lg:px-8">
           <div className="mt-16 flow-root sm:mt-24">
-            <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
+            <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 shadow-lg lg:-m-4 lg:rounded-2xl lg:p-4">
               <Image
                 src="/productImage.jpeg"
                 alt="chat preview"
@@ -52,25 +52,27 @@ export default function Home() {
         </div>
 
         {/* Features */}
-        <div className="mx-auto mb-32 mt-32 max-w-5xl sm:mt-56 px-6 lg:px-8">
-          <div className="mb-12">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="font-bold text-4xl text-gray-900 sm:text-5xl">
-                Start chatting in minutes
-              </h2>
-              <p className="mt-4 text-lg text-gray-600">
-              Chatting with your PDF files has never been easier. Use the chat feature to gain valuable insight, get the answers you need and make the best decisions.
-              </p>
-            </div>
-          </div>
+        <div className="mx-auto mt-20 max-w-5xl px-6 lg:px-8"> {/* Adjusted margin top here */}
+              <div className="mb-12 border-2 border-gray-300 rounded-lg shadow-xl">
+        <div className="mx-auto max-w-2xl text-center p-8">
+          <h2 className="font-bold text-4xl text-gray-900 sm:text-5xl">
+            Analyze Financial Reports
+          </h2>
+          <p className="mt-4 text-lg text-gray-600">
+            Quickly compare two financial reports to uncover key differences. Our tool automatically analyzes the documents, providing essential insights into your financial performance. Prepare better for the future based on clear, actionable data.
+          </p>
+        </div>
+      </div>
 
-          <div className="mb-12">
-            <div className="mx-auto max-w-2xl text-center">
+
+
+          <div className="mb-12 border-2 border-gray-300 rounded-lg shadow-xl">
+            <div className="mt-5 mx-auto max-w-2xl text-center">
               <h2 className="font-bold text-4xl text-gray-900 sm:text-5xl">
-                Get valuable insights on the tables
+              View Essential Information at a Glance
               </h2>
-              <p className="mt-4 text-lg text-gray-600">
-              Not much time to chat? Get the most important information in the tables that illustrate the most important information. To make your life even easier, everything is calculated in advance!
+              <p className="mt-5 mb-4 text-lg text-gray-600">
+              Prefer visual data? Access critical figures directly from pre-calculated tables. Easily identify key financial metrics without the need for extensive chat interaction. Simplify your decision-making with ready-to-view insights.
               </p>
             </div>
           </div>
@@ -134,6 +136,63 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+    {/* FAQ Section */}
+<div className="mx-auto mt-12 max-w-4xl px-7 lg:px-8">
+<h2 className="font-bold text-gray-900 sm:text-5xl">FAQ</h2>
+
+  <div className="pt-4">
+    {/* FAQ Item 1 */}
+    <div className="mb-6">
+      <h4 className="text-lg font-medium text-gray-900">How do I upload my financial reports?</h4>
+      <p className="mt-2 text-gray-600">You can upload your PDF financial reports directly through our secure upload feature.</p>
+    </div>
+
+    {/* FAQ Item 2 */}
+    <div className="mb-6">
+      <h4 className="text-lg font-medium text-gray-900">What key differences will I see?</h4>
+      <p className="mt-2 text-gray-600">Our tool highlights significant changes in key financial metrics such as revenue, expenses, and profitability.</p>
+    </div>
+
+    {/* FAQ Item 3 */}
+    <div className="mb-6">
+      <h4 className="text-lg font-medium text-gray-900">Can I export the analysis results?</h4>
+      <p className="mt-2 text-gray-600">Yes, you can export the analysis results in PDF or CSV format for further review or sharing.</p>
+    </div>
+  </div>
+</div>
+
+<footer className="mt-10 bg-gray-800 py-12">
+  <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col items-center justify-center"> {/* Centered content */}
+      <div className="grid grid-cols-2 gap-8 max-w-full">
+        {/* Column 1 - Catalyst */}
+        <div className="flex flex-col items-center md:items-start mb-8 md:mb-0">
+          <h3><a href="#" className="text-lg font-bold text-white">Catalyst</a></h3>
+          <p className="text-gray-400">123 Street, City, Country</p>
+          <p className="text-gray-400">contact@catalyst.com</p>
+          <p className="text-gray-400">+123 456 7890</p>
+        </div>
+
+        {/* Column 2 - Quick Links */}
+        <div className="flex flex-col items-center md:items-start mb-8 md:mb-0">
+          <h3 className="text-lg font-bold text-white">Quick Links</h3>
+          <ul className="text-center md:text-left">
+            <li><a href="localhost:3000" className="text-gray-400 hover:text-white transition duration-300">Home</a></li>
+            <li><a href="localhost:3000/dashboard" className="text-gray-400 hover:text-white transition duration-300">Dashboard</a></li>
+            <li><a href="localhost:3000/insights/company-analysis" className="text-gray-400 hover:text-white transition duration-300">Documentation</a></li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Copyright */}
+      <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+        <p>&copy; 2024 Catalyst. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
     </>
   );
 }
