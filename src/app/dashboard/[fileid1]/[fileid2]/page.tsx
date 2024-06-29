@@ -8,6 +8,7 @@ import ComparisonTable from "@/components/ComparisonTable"
 import { useQuery } from "@tanstack/react-query"
 import PlotFromCsv from "@/components/PdfToCsv"
 import Image from "next/image"
+import MiniLineChart from "@/components/MiniLineChart"
 
 interface PageProps {
     params: {
@@ -63,6 +64,7 @@ const Page = async ({params}: PageProps) => {
                                 </div>
                             </TabsContent>
                             <TabsContent value="benchmarking">
+                                <MiniLineChart/>
                                 <ComparisonTable file1={file1.id}  file2={file2.id}/>
                             </TabsContent>
                             <TabsContent value="graphs">
