@@ -15,8 +15,7 @@ export default function Home() {
         </div>
         <h1 className="max-w-5xl text-5xl font-bold md:text-6xl lg:text-7xl">
           Annual Report <span className="text-gray-600"><i>Dynamics:</i></span><br/>
-          <span className="text-blue-600">Year-over-Year</span> and<br/>
-          and <span className="text-blue-600">Sector-by-Sector</span> <span className="text-orange-600"><i>Analysis</i></span>
+          <span className="text-blue-600">Year-over-Year</span> and<br/><span className="text-blue-600">Sector-by-Sector</span> <span className="text-orange-600"><i>Analysis</i></span>
         </h1>
         <p className="mt-5 max-w-prose text-zinc-700 sm:text-lg">
           Catalyst enables you to upload annual reports from your chosen companies and immediately begin querying the data.
@@ -41,7 +40,7 @@ export default function Home() {
           <div className="mt-16 flow-root sm:mt-24">
             <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
               <Image
-                src="/chat-preview.jpg"
+                src="/productImage.jpeg"
                 alt="chat preview"
                 width={1364}
                 height={866}
