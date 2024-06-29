@@ -96,7 +96,7 @@ export const POST = async (req: NextRequest) => {
 
     // Get 4 closest results
     const results1 = await vectorStore1.similaritySearch(message, 10)
-    console.log("Closest pages in left file: " + results1.map((r) => r.metadata["loc.pageNumber"]).join(', '))
+    console.log("Semantically closest pages in left file: " + results1.map((r) => r.metadata["loc.pageNumber"]).join(', '))
 
 
     // Same for file 2
@@ -106,7 +106,7 @@ export const POST = async (req: NextRequest) => {
     })
 
     const results2 = await vectorStore2.similaritySearch(message, 10)
-    console.log("Closest pages in right file: " + results2.map((r) => r.metadata["loc.pageNumber"]).join(', '))
+    console.log("Semantically closest pages in right file: " + results2.map((r) => r.metadata["loc.pageNumber"]).join(', '))
 
 
     ///////////////////////////////////
