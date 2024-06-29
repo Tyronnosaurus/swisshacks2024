@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ComparisonTable from "@/components/ComparisonTable"
 import { useQuery } from "@tanstack/react-query"
 import PlotFromCsv from "@/components/PdfToCsv"
+import Image from "next/image"
 
 interface PageProps {
     params: {
@@ -65,7 +66,9 @@ const Page = async ({params}: PageProps) => {
                                 <ComparisonTable file1={file1.id}  file2={file2.id}/>
                             </TabsContent>
                             <TabsContent value="graphs">
-                                <PlotFromCsv/>
+                                {/* <PlotFromCsv/> */}
+                                {/* <Image src="/SummaryKPIs.PNG" width={800} height={1000} alt="Summary of KPIs"/> */}
+                                <h1>Coming soon</h1>
                             </TabsContent>
                         </div>
                     </Tabs>
