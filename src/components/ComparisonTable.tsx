@@ -20,7 +20,7 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer"
-import { ChevronRight, ChevronsRight, PlusCircle, PlusIcon } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 
 interface Data {
     [section: string]: {
@@ -101,20 +101,18 @@ const ComparisonTable: React.FC = () => {
             <div className="flex justify-end mt-4">
                 <Drawer>
                     <DrawerTrigger asChild>
-                    <Button variant="outline" size="icon">
-      <PlusIcon className="h-4 w-4" />
-    </Button>
+                        <Button variant="outline" size="icon">
+                            <PlusIcon className="h-4 w-4" />
+                        </Button>
                     </DrawerTrigger>
-                    <DrawerContent className='flex flex-col justify-items-center justify-center items-center  space-y-4'>
+                    <DrawerContent className='flex flex-col items-center justify-center space-y-4 '>
                         <DrawerHeader>
                             <DrawerTitle>Add New KPI</DrawerTitle>
                             <DrawerDescription>Enter details for the new KPI.</DrawerDescription>
                         </DrawerHeader>
-                        <form onSubmit={handleFormSubmit} className="">
+                        <form onSubmit={handleFormSubmit} className="flex flex-col space-y-4 w-full max-w-xs">
                             <Input placeholder="Enter KPI name" />
-                            <Input placeholder="Enter value for Company A" />
-                            <Input placeholder="Enter value for Company B" />
-                            <DrawerFooter>
+                            <DrawerFooter className="flex justify-between">
                                 <Button type="submit">Submit</Button>
                                 <DrawerClose asChild>
                                     <Button variant="outline">Cancel</Button>
