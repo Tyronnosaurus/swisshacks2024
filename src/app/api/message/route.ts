@@ -134,6 +134,7 @@ export const POST = async (req: NextRequest) => {
         }
     ]
 
+    console.log("Prompt messages: ", promptMessages)
     // Send prompt to OpenAI API
     const response = await openai.chat.completions.create({
         model: "gpt-4o",

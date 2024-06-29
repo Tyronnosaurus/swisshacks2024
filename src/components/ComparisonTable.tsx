@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from 'react';
 import {
     Table,
@@ -20,7 +20,11 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer"
-import { PlusIcon } from 'lucide-react';
+import { PlusIcon, SparklesIcon } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface Data {
     [section: string]: {
@@ -58,6 +62,8 @@ const data: Data = {
     },
 };
 
+const suggestions = ["Cash Ratio", "ROE", "Net Income Margin"];
+
 const formatValue = (value: number | string) => {
     if (typeof value === 'number') {
         return new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: 2 }).format(value);
@@ -65,13 +71,59 @@ const formatValue = (value: number | string) => {
     return value;
 };
 
-const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // Handle form submission
-    console.log("Form submitted");
-};
+const kpiSchema = z.object({
+    kpiName: z.string().nonempty("KPI name is required"),
+});
 
-const ComparisonTable: React.FC = () => {
+type KpiFormData = z.infer<typeof kpiSchema>;
+
+
+
+const ComparisonTable: React.FC<{file1: string, file2:string}> = ({file1,file2}) => {
+    const [selectedSuggestion, setSelectedSuggestion] = useState("");
+    const [isOpen, setIsOpen] = useState(false);
+
+    console.log("FILES", file1, file2)
+
+    const form = useForm<KpiFormData>({
+        resolver: zodResolver(kpiSchema),
+        defaultValues: {
+            kpiName: "",
+        },
+    });
+
+    const calculateKpi = async ({ fileid1,fileid2, kpiName }: { fileid1:string,fileid2: string; kpiName: string }) => {
+        const response = await fetch('/api/calculator', {
+            method: 'POST',
+            body: JSON.stringify({ fileid1, fileid2, kpiName }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to calculate KPI');
+        }
+
+        const result = await response.text();
+        return result;
+    };
+
+    const { mutate: calculateKpiMutation, data: kpiResult, isLoading } = useMutation(calculateKpi, {
+        onSuccess: (data) => {
+            setIsOpen(false);
+        },
+        onError: (error: any) => {
+            console.error(error.message);
+        }
+    });
+
+    const handleSuggestionClick = (suggestion: string) => {
+        setSelectedSuggestion(suggestion);
+        form.setValue("kpiName", suggestion);
+    };
+
+    const handleFormSubmit: SubmitHandler<KpiFormData> = (data) => {
+        calculateKpiMutation({ fileId: 'file1_file2', kpiName: data.kpiName });
+    };
+
     return (
         <div className="container mx-auto p-4">
             <h2 className="text-2xl font-bold mb-4">Company Comparison</h2>
@@ -99,26 +151,43 @@ const ComparisonTable: React.FC = () => {
                 </div>
             ))}
             <div className="flex justify-end mt-4">
-                <Drawer>
+                <Drawer open={isOpen} onOpenChange={setIsOpen}>
                     <DrawerTrigger asChild>
                         <Button variant="outline" size="icon">
                             <PlusIcon className="h-4 w-4" />
                         </Button>
                     </DrawerTrigger>
-                    <DrawerContent className='flex flex-col items-center justify-center space-y-4 '>
+                    <DrawerContent className='flex flex-col items-center justify-center space-y-4'>
                         <DrawerHeader>
-                            <DrawerTitle>Add New KPI</DrawerTitle>
+                            <div className='flex flex-row items-center'>
+                                <SparklesIcon />
+                                <DrawerTitle className='ml-3'>KPI Calculator</DrawerTitle>
+                            </div>
                             <DrawerDescription>Enter details for the new KPI.</DrawerDescription>
                         </DrawerHeader>
-                        <form onSubmit={handleFormSubmit} className="flex flex-col space-y-4 w-full max-w-xs">
-                            <Input placeholder="Enter KPI name" />
+                        <div className="flex space-x-2 mb-4">
+                            {suggestions.map(suggestion => (
+                                <Button key={suggestion} variant="secondary" onClick={() => handleSuggestionClick(suggestion)}>
+                                    {suggestion}
+                                </Button>
+                            ))}
+                        </div>
+                        <form onSubmit={form.handleSubmit(handleFormSubmit)} className="flex flex-col space-y-4 w-full max-w-xs">
+                            <Input value={form.watch("kpiName")} onChange={e => form.setValue("kpiName", e.target.value)} placeholder="Enter KPI name" />
                             <DrawerFooter className="flex justify-between">
-                                <Button type="submit">Submit</Button>
+                                <Button type="submit" disabled={isLoading}>Submit</Button>
                                 <DrawerClose asChild>
                                     <Button variant="outline">Cancel</Button>
                                 </DrawerClose>
                             </DrawerFooter>
                         </form>
+                        {isLoading && <p>Loading...</p>}
+                        {kpiResult && (
+                            <div className="mt-4 p-4 border rounded">
+                                <h3 className="font-semibold">KPI Calculation Result</h3>
+                                <pre>{kpiResult}</pre>
+                            </div>
+                        )}
                     </DrawerContent>
                 </Drawer>
             </div>
