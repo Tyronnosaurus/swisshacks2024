@@ -49,7 +49,7 @@ const Page = async ({params}: PageProps) => {
             <div className="mx-auto w-full max-w-8xl grow lg:flex lg:px-2">
                 {/* Left side (or top on small screens) */}
                 <div className="flex flex-row gap-4 px-4 py-6 sm:px-6 lg:pl-8 xl:flex-1 xl:pl-6 bg-zinc-100">
-                    <Tabs defaultValue="pdfs" className="bg-zinc-100">
+                    <Tabs defaultValue="pdfs" className="bg-zinc-100 w-full">
                         <TabsList>
                             <TabsTrigger value="pdfs">Reports visualizer</TabsTrigger>
                             <TabsTrigger value="benchmarking">Benchmarking</TabsTrigger>
