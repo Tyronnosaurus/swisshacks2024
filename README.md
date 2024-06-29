@@ -18,7 +18,14 @@ Based on [this tutorial](https://www.youtube.com/watch?v=ucX2zXAZ1I0) by 'Josh t
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-First, run the development server:
+First, install the dependencies:
+
+```pnpm install```
+
+Then, run
+```npx prisma generate```
+
+Then, run the development server:
 
 ```bash
 npm run dev
