@@ -9,16 +9,17 @@ import {
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
-  
+
+
 interface Data {
     [section: string]: {
-        [kpi: string]: [string, string];
+        [kpi: string]: [number | string, number | string];
     };
 }
 
 const data: Data = {
     basics: {
-        "Fund size": ["EUR 83,727 m", "EUR 71,619 m"],
+        "Fund size": [83727, 71619], // values in millions
         "Total expense ratio": ["0.07% p.a.", "0.20% p.a."],
         "Replication": ["Physical", "Physical"],
         "Legal structure": ["ETF", "ETF"],
@@ -30,7 +31,7 @@ const data: Data = {
         "Distribution policy": ["Accumulating", "Accumulating"]
     },
     profitability: {
-        "Net Income": ["€5,000,000", "€4,800,000"],
+        "Net Income": [5000, 4800], // values in millions
         "Return on Assets (ROA)": ["5.5%", "5.2%"],
         "Return on Equity (ROE)": ["12.5%", "12.0%"],
     },
@@ -46,6 +47,13 @@ const data: Data = {
     },
 };
 
+const formatValue = (value: number | string) => {
+    if (typeof value === 'number') {
+        return new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: 2 }).format(value);
+    }
+    return value;
+};
+
 const ComparisonTable: React.FC = () => {
     return (
         <div className="container mx-auto p-4">
@@ -54,19 +62,19 @@ const ComparisonTable: React.FC = () => {
                 <div key={section} className="mb-8">
                     <h3 className="text-xl font-semibold mb-2 capitalize">{section}</h3>
                     <Table>
-                        <TableHead>
+                        <TableHeader>
                             <TableRow>
-                                <TableCell>KPI</TableCell>
-                                <TableCell>Company A</TableCell>
-                                <TableCell>Company B</TableCell>
+                                <TableHead>KPI</TableHead>
+                                <TableHead>Company A</TableHead>
+                                <TableHead>Company B</TableHead>
                             </TableRow>
-                        </TableHead>
+                        </TableHeader>
                         <TableBody>
                             {Object.entries(kpis).map(([kpi, values]) => (
                                 <TableRow key={kpi}>
                                     <TableCell>{kpi}</TableCell>
-                                    <TableCell>{values[0]}</TableCell>
-                                    <TableCell>{values[1]}</TableCell>
+                                    <TableCell>{formatValue(values[0])}</TableCell>
+                                    <TableCell>{formatValue(values[1])}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
