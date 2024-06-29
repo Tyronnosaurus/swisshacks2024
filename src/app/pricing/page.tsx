@@ -26,7 +26,7 @@ const Page = () => {
               tooltip: 'The maximum amount of pages per PDF-file.',
             },
             {
-              text: '5MB file size limit',
+              text: '256MB file size limit',
               tooltip: 'The maximum file size of a single PDF file.',
             },
             {
