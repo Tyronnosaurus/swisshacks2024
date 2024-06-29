@@ -74,46 +74,31 @@ export const POST = async (req: NextRequest) => {
 
         console.log("Initialized Pinecone and OpenAIEmbeddings");
 
-        // Search the Pinecone vectorstore for the most relevant pages containing the formula
-        const vectorStore1 = await PineconeStore.fromExistingIndex(embeddings, {
-            pineconeIndex,
-            namespace: file1.id
-        });
+        const extractFormulaAndComponents = async (kpiName: string) => {
+            const kpiFormulaPrompt = `Given the KPI name "${kpiName}", provide the exact formula for this KPI and list all components separately along with their alternate names.
 
-        const vectorStore2 = await PineconeStore.fromExistingIndex(embeddings, {
-            pineconeIndex,
-            namespace: file2.id
-        });
-
-        console.log("Initialized Pinecone stores");
-
-        const extractFormulaAndComponents = async (kpiName: string, formulaContent1: string, formulaContent2: string) => {
-            const kpiFormulaPrompt = `Given the following context, identify the formula for the KPI "${kpiName}" and its components. Provide the formula and list all components separately.
-
-CONTEXT 1:
-${formulaContent1}
-
-CONTEXT 2:
-${formulaContent2}
-
-Provide the response in the following JSON format:
+Provide the response in the following JSON format like in this example:
 {
     "formula": {
-        "kpi_name": "${kpiName}",
+        "kpi_name": "fake_kpi_name",
         "formula_js": "total revenue / total assets",
         "components": [
             {
-                "name": "total revenue"
+                "name": "total revenue",
+                "alternates": ["revenue", "total revenue", "total sales","sales", ]
             },
             {
-                "name": "total assets"
+                "name": "total assets",
+                "alternates": ["assets"]
             }
         ]
     }
-}`;
+}
+    
+Please try to condense (where possible) formula components. For example if you have "cash and cash equivalents", do not separate them into "cash" and "cash equivalents", just put it as an alternate name, such as "alternates": ["cash and cash equivalents", "cash", "cash equivalents" ]`;
 
             const formulaResponse = await openai.chat.completions.create({
-                model: "gpt-4",
+                model: "gpt-4o",
                 messages: [
                     {
                         role: 'system',
@@ -136,7 +121,8 @@ Provide the response in the following JSON format:
                     formula_js: z.string(),
                     components: z.array(
                         z.object({
-                            name: z.string()
+                            name: z.string(),
+                            alternates: z.array(z.string())
                         })
                     )
                 })
@@ -145,29 +131,33 @@ Provide the response in the following JSON format:
             return schema.parse(formulaAndComponents);
         };
 
-        const searchComponentValues = async (vectorStore: PineconeStore, component: string) => {
-            const componentSearchPrompt = `Find information related to the following component in the context provided. 
+        const searchComponentValues = async (vectorStore: PineconeStore, component: any, alternates: string[]) => {
+            const componentSearchPrompt = `Find information related to the following component or its alternates in the context provided. 
 
-COMPONENT:
-${component}`;
+            COMPONENT:
+            ${JSON.stringify(component)}`
+    
 
             const componentResults = await vectorStore.similaritySearch(componentSearchPrompt, 10) as PineconeResult[];
             const componentContent = componentResults.map((r: PineconeResult) => r.pageContent).join('\n\n');
 
-            const extractionPrompt = `Extract the value for the component "${component}" from the following context:
+            const extractionPrompt = `Extract the value for the component "${JSON.stringify(component)}" from the following context:
 
-CONTEXT:
-${componentContent}
+                CONTEXT:
+                ${componentContent}
 
-Provide the response in the following JSON format:
-{
-    "component_name": "${component}",
-    "value": "extracted value",
-    "type": "data type (e.g., money, percentage, etc.)"
-}`;
+                Provide the response in the following JSON format:
+                {
+                    "component_name": "name of the component (e.g., total revenue)",
+                    "value": "extracted value",
+                    "type": "data type (e.g., money, percentage, etc.)"
+                }
+
+                Please make sure to check for all the alternate names, and add in the component_name, the name under which you found that value since different reports often have different names.
+                If you do not find the EXACT value for that component, put the closest value, but under NO circumstance invent it.` ;
 
             const extractionResponse = await openai.chat.completions.create({
-                model: "gpt-4",
+                model: "gpt-4o",
                 messages: [
                     {
                         role: 'system',
@@ -179,33 +169,35 @@ Provide the response in the following JSON format:
                     }
                 ]
             });
-            console.log("prompt", extractionPrompt)
-            console.log(`Extraction response for component "${component}":`, JSON.stringify(extractionResponse, null, 2));
+            console.log(`Extraction response for component "${component.name}":`, JSON.stringify(extractionResponse, null, 2));
 
             return JSON.parse(extractionResponse.choices[0].message?.content || "{}");
         };
 
-        const formulaSearchPrompt = `Find the exact formula for the KPI "${kpiName}".`;
-
-        const formulaResult1 = await vectorStore1.similaritySearch(formulaSearchPrompt, 10) as PineconeResult[];
-        const formulaResult2 = await vectorStore2.similaritySearch(formulaSearchPrompt, 10) as PineconeResult[];
-
-        const formulaContent1 = formulaResult1.map((r: PineconeResult) => r.pageContent).join('\n\n');
-        const formulaContent2 = formulaResult2.map((r: PineconeResult) => r.pageContent).join('\n\n');
-
-        const { formula } = await extractFormulaAndComponents(kpiName, formulaContent1, formulaContent2);
+        const { formula } = await extractFormulaAndComponents(kpiName);
         console.log("Extracted formula and components:", JSON.stringify(formula, null, 2));
 
-        // Search for each component in both documents
+        // Initialize Pinecone vector stores for the documents
+        const vectorStore1 = await PineconeStore.fromExistingIndex(embeddings, {
+            pineconeIndex,
+            namespace: file1.id
+        });
+
+        const vectorStore2 = await PineconeStore.fromExistingIndex(embeddings, {
+            pineconeIndex,
+            namespace: file2.id
+        });
+
+        // Perform similarity searches for each component in both files
         const componentValuesFile1 = await Promise.all(
             formula.components.map(async (component) => {
-                return await searchComponentValues(vectorStore1, component.name);
+                return await searchComponentValues(vectorStore1, component, component.alternates);
             })
         );
 
         const componentValuesFile2 = await Promise.all(
             formula.components.map(async (component) => {
-                return await searchComponentValues(vectorStore2, component.name);
+                return await searchComponentValues(vectorStore2, component, component.alternates);
             })
         );
 
