@@ -6,6 +6,9 @@ import { notFound, redirect } from "next/navigation"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import ComparisonTable from "@/components/ComparisonTable"
 import { useQuery } from "@tanstack/react-query"
+import PlotFromCsv from "@/components/PdfToCsv"
+import Image from "next/image"
+import MiniLineChart from "@/components/MiniLineChart"
 
 interface PageProps {
     params: {
@@ -61,9 +64,13 @@ const Page = async ({params}: PageProps) => {
                                 </div>
                             </TabsContent>
                             <TabsContent value="benchmarking">
+                                <MiniLineChart/>
                                 <ComparisonTable file1={file1.id}  file2={file2.id}/>
                             </TabsContent>
                             <TabsContent value="graphs">
+                                {/* <PlotFromCsv/> */}
+                                {/* <Image src="/SummaryKPIs.PNG" width={800} height={1000} alt="Summary of KPIs"/> */}
+                                <h1>Coming soon</h1>
                             </TabsContent>
                         </div>
                     </Tabs>
