@@ -52,7 +52,9 @@ export const POST = async (req: NextRequest) => {
 
 
     // Fetch the files' info from the database (to confirm they exist and belong to the actual logged in user)
-    const [fileId1, fileId2] = fileId.split("_")
+    // In reverse order to prevent switching them. TODO: Find out why they get switched
+    const [fileId2, fileId1] = fileId.split("_")
+    
      
     const file1 = await db.file.findFirst({
         where: {
