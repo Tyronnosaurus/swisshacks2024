@@ -114,7 +114,7 @@ const UploadDropZone = ({isSubscribed, setIsOpen}: UploadDropZoneProps) => {
                                         <span className="font-semibold">Click to upload</span>&nbsp;or drag and drop
                                     </p>
                                     <p className="text-xs text-zinc-500">
-                                        PDF (up to {isSubscribed ? "200" : "200"}MB)
+                                        PDF (up to {isSubscribed ? "256" : "256"}MB)
                                     </p>
                                 </div>
 
