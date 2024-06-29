@@ -95,7 +95,9 @@ export const POST = async (req: NextRequest) => {
     })
 
     // Get 4 closest results
-    const results1 = await vectorStore1.similaritySearch(message, 4)
+    const results1 = await vectorStore1.similaritySearch(message, 10)
+    console.log("Semantically closest pages in left file: " + results1.map((r) => r.metadata["loc.pageNumber"]).join(', '))
+
 
     // Same for file 2
     const vectorStore2 = await PineconeStore.fromExistingIndex(embeddings, {
@@ -103,7 +105,8 @@ export const POST = async (req: NextRequest) => {
         namespace: file2.id
     })
 
-    const results2 = await vectorStore2.similaritySearch(message, 4)
+    const results2 = await vectorStore2.similaritySearch(message, 10)
+    console.log("Semantically closest pages in right file: " + results2.map((r) => r.metadata["loc.pageNumber"]).join(', '))
 
 
     ///////////////////////////////////
@@ -113,20 +116,14 @@ export const POST = async (req: NextRequest) => {
     const promptMessages: ChatCompletionMessageParam[]  = [
         {
           role: 'system',
-          content: 'Use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format.',
+          content: 'Use the following pieces of context  to answer the users question in markdown format.',
         },
         {
           role: 'user',
           content: `Write a summary of the differences between the two contexts involving the input specified by the user.
                     You may also use the previous conversation. Write only the conclusion.
                     Give a response in markdown format. If you don't know the answer, just say that you don't know, don't try to make up an answer.
-                    \n----------------\n
-                    PREVIOUS CONVERSATION:
-                    ${formattedPrevMessages.map((message) => {
-                        if (message.role === 'user') return `User: ${message.content}\n`
-                        return `Assistant: ${message.content}\n`
-                    })}
-                    \n----------------\n
+          
                     CONTEXT 1:
                     ${results1.map((r) => r.pageContent).join('\n\n')}
                     \n
@@ -137,6 +134,7 @@ export const POST = async (req: NextRequest) => {
         }
     ]
 
+    console.log("Prompt messages: ", promptMessages)
     // Send prompt to OpenAI API
     const response = await openai.chat.completions.create({
         model: "gpt-4o",

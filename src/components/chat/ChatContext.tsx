@@ -143,7 +143,7 @@ export const ChatContextProvider = ({fileId1, fileId2, children}: ChatContextPro
             if(!stream) return(
                 toast({
                     title: "There was a problem getting an answer",
-                    description: "Please refresh the page and try again",
+                    description: "Please refresh the page and try again after a minute",
                     variant: "destructive"
                 })
             )
