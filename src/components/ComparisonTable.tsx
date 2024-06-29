@@ -33,7 +33,7 @@ interface Data {
     };
 }
 
-const data: Data = {
+const initialData: Data = {
     basics: {
         "Fund size": [83727, 71619], // values in millions
         "Total expense ratio": ["0.07% p.a.", "0.20% p.a."],
@@ -81,7 +81,8 @@ type KpiFormData = z.infer<typeof kpiSchema>;
 const ComparisonTable: React.FC<{ file1: string; file2: string }> = ({ file1, file2 }) => {
     const [selectedSuggestion, setSelectedSuggestion] = useState("");
     const [isOpen, setIsOpen] = useState(false);
-    const [kpiData, setKpiData] = useState<Data>(data);
+    const [kpiData, setKpiData] = useState<Data>(initialData);
+    const [loadingKpi, setLoadingKpi] = useState<string | null>(null);
 
     const form = useForm<KpiFormData>({
         resolver: zodResolver(kpiSchema),
@@ -104,21 +105,32 @@ const ComparisonTable: React.FC<{ file1: string; file2: string }> = ({ file1, fi
         return result;
     };
 
-    const { mutate: calculateKpiMutation, data: kpiResult, isLoading } = useMutation(calculateKpi, {
+    const { mutate: calculateKpiMutation, isLoading } = useMutation(calculateKpi, {
+        onMutate: ({ kpiName }) => {
+            setIsOpen(false);
+            setLoadingKpi(kpiName);
+
+            // Add a placeholder for the new KPI
+            const newKpiData = { ...kpiData };
+            const section = "custom";
+            newKpiData[section] = newKpiData[section] || {};
+            newKpiData[section][kpiName] = ["Loading...", "Loading..."];
+            setKpiData(newKpiData);
+        },
         onSuccess: (data) => {
             const newKpiData = { ...kpiData };
             const section = "custom"; // Add a new section for custom KPIs
             newKpiData[section] = newKpiData[section] || {};
 
-            data.fileid1.forEach((component: any, index: number) => {
-                newKpiData[section][`${component.component_name}`] = [component.value, data.fileid2[index].value];
-            });
+            // Add the final calculated KPI result
+            newKpiData[section][`${data.formula.kpi_name}`] = [data.kpiResults.file1, data.kpiResults.file2];
 
             setKpiData(newKpiData);
-            setIsOpen(false);
+            setLoadingKpi(null);
         },
         onError: (error: any) => {
             console.error(error.message);
+            setLoadingKpi(null);
         }
     });
 
@@ -149,8 +161,8 @@ const ComparisonTable: React.FC<{ file1: string; file2: string }> = ({ file1, fi
                             {Object.entries(kpis).map(([kpi, values]) => (
                                 <TableRow key={kpi}>
                                     <TableCell>{kpi}</TableCell>
-                                    <TableCell>{isLoading ? <Skeleton className="h-4 w-full" /> : formatValue(values[0])}</TableCell>
-                                    <TableCell>{isLoading ? <Skeleton className="h-4 w-full" /> : formatValue(values[1])}</TableCell>
+                                    <TableCell>{values[0] === "Loading..." ? <Skeleton className="h-4 w-full" /> : formatValue(values[0])}</TableCell>
+                                    <TableCell>{values[1] === "Loading..." ? <Skeleton className="h-4 w-full" /> : formatValue(values[1])}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -188,13 +200,6 @@ const ComparisonTable: React.FC<{ file1: string; file2: string }> = ({ file1, fi
                                 </DrawerClose>
                             </DrawerFooter>
                         </form>
-                        {isLoading && <p>Loading...</p>}
-                        {kpiResult && (
-                            <div className="mt-4 p-4 border rounded">
-                                <h3 className="font-semibold">KPI Calculation Result</h3>
-                                <pre>{JSON.stringify(kpiResult, null, 2)}</pre>
-                            </div>
-                        )}
                     </DrawerContent>
                 </Drawer>
             </div>
