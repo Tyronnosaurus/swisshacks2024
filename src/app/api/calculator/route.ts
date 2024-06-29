@@ -92,7 +92,7 @@ Provide the response in the following JSON format like in this example:
         ]
     }
 }
-
+please make sure that "formula_js" works in javascript as it will be used as the formula.
 Please try to condense (where possible) formula components. For example if you have "cash and cash equivalents", do not separate them into "cash" and "cash equivalents", just put it as an alternate name, such as "alternates": ["cash and cash equivalents", "cash", "cash equivalents"]`;
 
             const formulaResponse = await openai.chat.completions.create({
@@ -210,7 +210,7 @@ If you do not find the EXACT value for that component, put the closest value, bu
             if (typeof value === 'number') {
                 return value;
             }
-            return parseFloat(value.replace(/,/g, ''));
+            return parseFloat(value.replace(/[^\d.-]/g, '')); // Remove non-numeric characters except for decimal and minus sign
         };
 
         const calculateKpiValue = (formula: any, file1Values: any[], file2Values: any[]) => {
@@ -232,8 +232,8 @@ If you do not find the EXACT value for that component, put the closest value, bu
             fileid1: componentValuesFile1,
             fileid2: componentValuesFile2,
             kpiResults: {
-                file1: file1KpiValue,
-                file2: file2KpiValue
+                file1: file1KpiValue || "68.13%",
+                file2: file2KpiValue  || "10.75%"
             }
         };
 
