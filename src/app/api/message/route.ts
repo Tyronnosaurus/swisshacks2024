@@ -52,7 +52,9 @@ export const POST = async (req: NextRequest) => {
 
 
     // Fetch the files' info from the database (to confirm they exist and belong to the actual logged in user)
-    const [fileId1, fileId2] = fileId.split("_")
+    // In reverse order to prevent switching them. TODO: Find out why they get switched
+    const [fileId2, fileId1] = fileId.split("_")
+    
      
     const file1 = await db.file.findFirst({
         where: {
@@ -137,7 +139,7 @@ export const POST = async (req: NextRequest) => {
 
     // Send prompt to OpenAI API
     const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o",
         temperature: 0,
         stream: true,
         messages: promptMessages

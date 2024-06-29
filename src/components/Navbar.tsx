@@ -33,6 +33,21 @@ const Navbar = () => {
                 ) : (
                   <>
                       <Link href="/dashboard" className={buttonVariants({variant:"ghost", size:'sm'})}>Dashboard</Link>
+                      <NavigationMenu>
+  <NavigationMenuList>
+    <NavigationMenuItem>
+      <NavigationMenuTrigger>Insights</NavigationMenuTrigger>
+      <NavigationMenuContent>
+      <Link href="/insights/company-analysis" legacyBehavior passHref>
+    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+      Documentation
+    </NavigationMenuLink>
+  </Link>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  </NavigationMenuList>
+</NavigationMenu>
+
                       <UserAccountNav
                         name={!user.given_name || !user.family_name ? "Your Account" : `${user.given_name} ${user.family_name}`}
                         email={user.email ?? ""}

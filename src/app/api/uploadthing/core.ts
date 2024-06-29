@@ -130,11 +130,11 @@ export const ourFileRouter = {
 
   // Here we define as many upload routes as we need, each with a unique routeSlug
 
-  freePlanUploader: f({ pdf: { maxFileSize: "4MB" } })  // Set permissions and file types for this FileRoute
+  freePlanUploader: f({ pdf: { maxFileSize: "256MB" } })  // Set permissions and file types for this FileRoute
     .middleware(middleware)
     .onUploadComplete(onUploadComplete),
 
-  proPlanUploader: f({ pdf: { maxFileSize: "16MB" } })  // Set permissions and file types for this FileRoute
+  proPlanUploader: f({ pdf: { maxFileSize: "256MB" } })  // Set permissions and file types for this FileRoute
     .middleware(middleware)
     .onUploadComplete(onUploadComplete)
 

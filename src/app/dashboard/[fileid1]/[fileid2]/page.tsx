@@ -3,6 +3,8 @@ import PdfRenderer from "@/components/PdfRenderer"
 import { db } from "@/db"
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server"
 import { notFound, redirect } from "next/navigation"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import ComparisonTable from "@/components/ComparisonTable"
 
 interface PageProps {
     params: {
@@ -43,10 +45,28 @@ const Page = async ({params}: PageProps) => {
         <div className="flex-1 justify-between flex flex-col h-[calc(100vh-3.5rem)]">
             <div className="mx-auto w-full max-w-8xl grow lg:flex lg:px-2">
                 {/* Left side (or top on small screens) */}
+
                 <div className="flex flex-row gap-4 px-4 py-6 sm:px-6 lg:pl-8 xl:flex-1 xl:pl-6">
+                <Tabs defaultValue="pdfs" className="">
+  <TabsList >
+    <TabsTrigger value="pdfs">Reports visualizer</TabsTrigger>
+    <TabsTrigger value="password">Tables</TabsTrigger>
+  </TabsList>
+  <TabsContent value="pdfs">
+<div className="flex flex-row gap-4 w-full">
                     <PdfRenderer url={file1.url}/>
                     <PdfRenderer url={file2.url}/>
-                </div>
+                    </div>
+  </TabsContent>
+  <TabsContent value="password">
+<ComparisonTable/>
+
+
+
+  </TabsContent>
+</Tabs>
+</div>
+                
 
                 {/* Right side (or bottom on small screens) */}
                 <div className="shrink-0 flex-[0.75] border-t border-gray-200 lg:w-96 lg:border-l lg:border-t-0">
