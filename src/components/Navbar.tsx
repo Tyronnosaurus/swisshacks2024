@@ -34,7 +34,7 @@ const Navbar = () => {
                 ) : (
                   <>
                       <Link href="/dashboard" className={buttonVariants({variant:"ghost", size:'sm'})}>Dashboard</Link>
-                      <NavigationMenu>
+                      {/* <NavigationMenu>
                         <NavigationMenuList>
                           <NavigationMenuItem>
                             <NavigationMenuTrigger>Insights</NavigationMenuTrigger>
@@ -47,7 +47,7 @@ const Navbar = () => {
                             </NavigationMenuContent>
                           </NavigationMenuItem>
                         </NavigationMenuList>
-                      </NavigationMenu>
+                      </NavigationMenu> */}
 
                       <UserAccountNav
                         name={!user.given_name || !user.family_name ? "Your Account" : `${user.given_name} ${user.family_name}`}

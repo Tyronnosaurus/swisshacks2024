@@ -116,20 +116,14 @@ export const POST = async (req: NextRequest) => {
     const promptMessages: ChatCompletionMessageParam[]  = [
         {
           role: 'system',
-          content: 'Use the following pieces of context (or previous conversaton if needed) to answer the users question in markdown format.',
+          content: 'Use the following pieces of context  to answer the users question in markdown format.',
         },
         {
           role: 'user',
           content: `Write a summary of the differences between the two contexts involving the input specified by the user.
                     You may also use the previous conversation. Write only the conclusion.
                     Give a response in markdown format. If you don't know the answer, just say that you don't know, don't try to make up an answer.
-                    \n----------------\n
-                    PREVIOUS CONVERSATION:
-                    ${formattedPrevMessages.map((message) => {
-                        if (message.role === 'user') return `User: ${message.content}\n`
-                        return `Assistant: ${message.content}\n`
-                    })}
-                    \n----------------\n
+          
                     CONTEXT 1:
                     ${results1.map((r) => r.pageContent).join('\n\n')}
                     \n
