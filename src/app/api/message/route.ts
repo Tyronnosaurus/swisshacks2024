@@ -137,7 +137,7 @@ export const POST = async (req: NextRequest) => {
 
     // Send prompt to OpenAI API
     const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o",
         temperature: 0,
         stream: true,
         messages: promptMessages
