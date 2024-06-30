@@ -57,7 +57,7 @@ const Page = async ({params}: PageProps) => {
                             <TabsTrigger value="graphs">Graphs</TabsTrigger>
                             <TabsTrigger value="export">Export</TabsTrigger>
                         </TabsList>
-                        <div className="flex max-h-[calc(100vh-10.5rem)] min-w-[800px] border-zinc-200 flex-1 flex-col-reverse gap-4 p-3 overflow-y-auto 
+                        <div className="flex max-h-[calc(100vh-10.5rem)] min-w-[800px] border-zinc-200 flex-1 flex-col gap-4 p-3 overflow-y-auto 
                             scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
                             <TabsContent value="pdfs">
                                 <div className="flex flex-row gap-4 w-full">
