@@ -1,4 +1,4 @@
-[See it live!](https://quill-beta-nine.vercel.app/)
+[See it live!](https://swisshacks2024.vercel.app//)
 
 A complete webapp where you can upload a PDF and ask questions about it in plain English. Includes everything a SaaS would need: responsiveness, user registration, database, different plans, payment processor, chat with infinite scrolling, etc.
 
