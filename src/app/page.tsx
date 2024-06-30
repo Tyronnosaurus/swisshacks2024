@@ -1,7 +1,7 @@
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import { ArrowRight, PlayCircleIcon } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
 
 export default function Home() {
@@ -29,6 +29,13 @@ export default function Home() {
         <Link href="/dashboard" target="_blank" className={buttonVariants({ size: "lg", className: "mt-5" })}>
           Get started <ArrowRight className="ml-2 h-5 w-5" />
         </Link>
+        <Button className="bg-black mt-3" asChild>
+          <Link href="https://www.youtube.com/watch?v=Px1rdv2ye8E" >
+          {/* <a target="_blank"> */}
+      <PlayCircleIcon className="mr-2 h-4 w-4 " />Watch the teaser
+      {/* </a> */}
+      </Link>
+    </Button>
       </MaxWidthWrapper>
 
       {/* Value proposition section */}
