@@ -120,8 +120,7 @@ export const POST = async (req: NextRequest) => {
         },
         {
           role: 'user',
-          content: `Write a summary of the differences between the two contexts involving the input specified by the user.
-                    You may also use the previous conversation. Write only the conclusion.
+          content: `Write a summary of the differences between the two contexts involving the input specified by the user. Write only the conclusion.
                     Give a response in markdown format. If you don't know the answer, just say that you don't know, don't try to make up an answer.
           
                     CONTEXT 1:
