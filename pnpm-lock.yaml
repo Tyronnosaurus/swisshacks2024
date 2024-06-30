@@ -206,6 +206,10 @@ importers:
       zod:
         specifier: ^3.22.4
         version: 3.22.4
+    devDependencies:
+      '@types/papaparse':
+        specifier: ^5.3.14
+        version: 5.3.14
 
 packages:
 
