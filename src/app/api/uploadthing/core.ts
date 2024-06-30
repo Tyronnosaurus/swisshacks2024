@@ -32,7 +32,10 @@ interface onUploadCompleteProps {
   file: {key: string, name:string, url: string}
 }
 
+
 const onUploadComplete = async ({metadata, file}: onUploadCompleteProps) => {
+
+  console.log("File uploaded to UploadThing.")
 
   // Prevent bug in which sometimes this callback gets called twice after file upload finishes
   const fileAlreadyExists = await db.file.findFirst({
@@ -121,6 +124,8 @@ const onUploadComplete = async ({metadata, file}: onUploadCompleteProps) => {
         userId: metadata.userId }
     })
   }
+
+  console.log("Finished postprocessing uploaded file")
 
 }
 
