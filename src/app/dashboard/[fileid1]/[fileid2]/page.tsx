@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query"
 import PlotFromCsv from "@/components/PdfToCsv"
 import Image from "next/image"
 import MiniLineChart from "@/components/MiniLineChart"
+import Graphs from "@/components/Graphs"
 
 interface PageProps {
     params: {
@@ -71,7 +72,7 @@ const Page = async ({params}: PageProps) => {
                             <TabsContent value="graphs">
                                 {/* <PlotFromCsv/> */}
                                 {/* <Image src="/SummaryKPIs.PNG" width={800} height={1000} alt="Summary of KPIs"/> */}
-                                <h1>Coming soon</h1>
+                                <Graphs/>
                             </TabsContent>
                             <TabsContent value="export">
                                 <h1 className="text-2xl font-bold sm:text-3xl gap-1 py-3">Generated dashboard</h1>

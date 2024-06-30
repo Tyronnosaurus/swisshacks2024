@@ -13,9 +13,15 @@ export default function Home() {
             Catalyst is now available to the public 🚀
           </p>
         </div>
-        <h1 className="max-w-5xl text-5xl font-bold md:text-6xl lg:text-7xl">
-          Annual Report <span className="text-gray-600"><i>Dynamics:</i></span><br/>
-          <span className="text-blue-600">Year-over-Year</span> and<br/><span className="text-blue-600">Sector-by-Sector</span> <span className="text-orange-600"><i>Analysis</i></span>
+        <h1 className="max-w-5xl text-5xl font-extrabold md:text-6xl lg:text-7xl leading-tight">
+          Your Analyst Co-Pilot
+          <br/>
+          <span className="text-gray-600"> Analyze</span>, 
+          <span className="text-blue-600"> Understand</span>, 
+          <span className="text-green-600"> Benchmark</span>
+          <br/>
+          and make 
+          <span className="text-orange-600 italic"> Informed Decisions</span>
         </h1>
         <p className="mt-5 max-w-prose text-zinc-700 sm:text-lg">
           Catalyst enables you to upload annual reports from your chosen companies and immediately begin querying the data.
