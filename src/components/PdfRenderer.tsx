@@ -79,10 +79,10 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
     <div className="w-1/2 bg-white rounded-md shadow flex flex-col items-center">
 
       {/* PDF options bar */}
-      <div className="h-14 w-full border-b border-zinc-200 flex items-center justify-between px-2"> 
+      <div className="h-14 w-full border-b border-zinc-200 flex items-center justify-between px-1"> 
         
         {/* Page selector (on the left)*/}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1">
           <Button variant="ghost"
                   aria-label="previous-page"
                   onClick={() => {
@@ -93,12 +93,12 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
             <ChevronDown className="h-4 w-4" />
           </Button>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1">
             <Input
               {...register("page")}
-              className={cn('w-12 h-8', errors.page && "focus-visible:ring-red-500")}
+              className={cn('w-12 h-6', errors.page && "focus-visible:ring-red-500")}
               onKeyDown={(e) => {if (e.key === "Enter") handleSubmit(handlePageSubmit)()}}/>
-            <p className="text-zinc-700 text-sm space-x-1">
+            <p className="text-zinc-700 text-sm space-x-0.5">
               <span>/</span>
               <span>{numPages ?? "?"}</span>
             </p>
@@ -116,13 +116,13 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
         </div>
 
         {/* Controls on the right side */}
-        <div className="space-x-2">
+        <div className="space-x-0.5">
 
           {/* Scale (zoom) dropdowm menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button aria-label='zoom' variant='ghost' className="gap-1.5">
-                <Search className="h-4 w-4"/>
+              <Button aria-label='zoom' variant='ghost' className="gap-1">
+                <Search className="h-3 w-3"/>
                 {scale * 100}%<ChevronDown className='h-3 w-3 opacity-50' />
               </Button>
             </DropdownMenuTrigger>
@@ -136,12 +136,12 @@ const PdfRenderer = ({url}:PdfRendererProps) => {
           </DropdownMenu>
 
           {/* Rotation button */}
-          <Button
+          {/* <Button
             variant='ghost'
             aria-label="rotate 90 degrees"
             onClick={() => setRotation((prev) => (prev>=270 ? 0 : prev+90))}>
-            <RotateCw className="h-4 w-4"/>
-          </Button>
+            <RotateCw className="h-3 w-3"/>
+          </Button> */}
 
           {/* Fullscreen button */}
           <PdfFullScreen url={url} scale={scale} rotation={rotation}/>
