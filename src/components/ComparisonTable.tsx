@@ -35,16 +35,10 @@ interface Data {
 
 const initialData: Data = {
     basics: {
-        "Fund size": [83727, 71619], // values in millions
-        "Total expense ratio": ["0.07% p.a.", "0.20% p.a."],
-        "Replication": ["Physical", "Physical"],
-        "Legal structure": ["ETF", "ETF"],
-        "Strategy risk": ["Long-only", "Long-only"],
-        "Fund currency": ["USD", "USD"],
-        "Currency risk": ["Currency unhedged", "Currency unhedged"],
+        "Legal structure": ["Swiss Ltd.", "German Ltd."],
+        "Stock currency": ["USD", "USD"],
         "Volatility 1 year (in EUR)": ["11.57%", "9.91%"],
-        "Inception/ Listing Date": ["19 May 2010", "25 September 2009"],
-        "Distribution policy": ["Accumulating", "Accumulating"]
+        // "Inception/ Listing Date": ["19 May 2010", "25 September 2009"],
     },
     profitability: {
         "Net Income": [5000, 4800], // values in millions
@@ -153,8 +147,8 @@ const ComparisonTable: React.FC<{ file1: string; file2: string }> = ({ file1, fi
                         <TableHeader className="sticky top-0 bg-white z-10">
                             <TableRow>
                                 <TableHead>KPI</TableHead>
-                                <TableHead>Company A</TableHead>
-                                <TableHead>Company B</TableHead>
+                                <TableHead>UBS</TableHead>
+                                <TableHead>Siemens</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
