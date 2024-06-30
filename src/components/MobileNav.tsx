@@ -14,9 +14,10 @@ const MobileNav = ({isAuth}: {isAuth: boolean}) => {
     // Make sure menu is closed after clicking an item
     const pathname = usePathname()
 
-    useEffect(() => {
-        if(isOpen) toggleOpen()
-    }, [pathname])
+    // Closes the menu if user clicks on a link to another page
+    // useEffect(() => {
+    //     if(isOpen) toggleOpen()
+    // }, [pathname])
 
     // Close menu if user clicks item of current page
     const closeOnCurrent = (href: string) => {
