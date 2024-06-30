@@ -48,8 +48,8 @@ const Page = async ({params}: PageProps) => {
         <div className="flex-1 justify-between flex flex-col h-[calc(100vh-3.5rem)] bg-zinc-100">
             <div className="mx-auto w-full max-w-8xl grow lg:flex lg:px-2">
                 {/* Left side (or top on small screens) */}
-                <div className="flex flex-row w-1/3 gap-4 px-4 py-6 sm:px-6 lg:pl-8 xl:flex-1 xl:pl-6 bg-zinc-100">
-                    <Tabs defaultValue="pdfs" className="bg-zinc-100 w-full">
+                <div className="flex flex-row w-1/3 gap-4 px-4 py-6 sm:px-6 lg:pl-8 xl:flex-1 xl:pl-6 bg-gray-50">
+                    <Tabs defaultValue="pdfs" className="bg-gray-50 w-full">
                         <TabsList>
                             <TabsTrigger value="pdfs">Reports visualizer</TabsTrigger>
                             <TabsTrigger value="benchmarking">Benchmarking</TabsTrigger>
