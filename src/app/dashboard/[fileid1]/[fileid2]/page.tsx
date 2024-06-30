@@ -54,6 +54,7 @@ const Page = async ({params}: PageProps) => {
                             <TabsTrigger value="pdfs">Reports visualizer</TabsTrigger>
                             <TabsTrigger value="benchmarking">Benchmarking</TabsTrigger>
                             <TabsTrigger value="graphs">Graphs</TabsTrigger>
+                            <TabsTrigger value="export">Export</TabsTrigger>
                         </TabsList>
                         <div className="flex max-h-[calc(100vh-10.5rem)] min-w-[800px] border-zinc-200 flex-1 flex-col-reverse gap-4 p-3 overflow-y-auto 
                             scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
@@ -71,6 +72,10 @@ const Page = async ({params}: PageProps) => {
                                 {/* <PlotFromCsv/> */}
                                 {/* <Image src="/SummaryKPIs.PNG" width={800} height={1000} alt="Summary of KPIs"/> */}
                                 <h1>Coming soon</h1>
+                            </TabsContent>
+                            <TabsContent value="export">
+                                <h1 className="text-2xl font-bold sm:text-3xl gap-1 py-3">Generated dashboard</h1>
+                                <PdfRenderer url="/PowerBIDashboard.pdf"/>
                             </TabsContent>
                         </div>
                     </Tabs>
