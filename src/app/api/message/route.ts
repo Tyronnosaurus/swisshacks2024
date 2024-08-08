@@ -116,12 +116,12 @@ export const POST = async (req: NextRequest) => {
     const promptMessages: ChatCompletionMessageParam[]  = [
         {
           role: 'system',
-          content: 'Use the following pieces of context  to answer the users question in markdown format.',
+          content: 'Use the following context to answer the user"s question in markdown format.',
         },
         {
           role: 'user',
-          content: `Write a summary of the differences between the two contexts involving the input specified by the user. Write only the conclusion.
-                    Give a response in markdown format. If you don't know the answer, just say that you don't know, don't try to make up an answer.
+          content: `Write a summary of the differences between the two contexts using the input given by the user. Write only the conclusion.
+                    Give a response in markdown format. If you don't know the answer, just say you don't know, don't try to make it up.
           
                     CONTEXT 1:
                     ${results1.map((r) => r.pageContent).join('\n\n')}

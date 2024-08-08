@@ -4,6 +4,12 @@
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+# To install pnpm globally
+npm install -g pnpm
+
+# Verify the installation
+pnpm --version
+
 First, install the dependencies:
 
 ```pnpm install```
@@ -17,11 +23,12 @@ Then, run the development server:
 npm run dev
 # or
 yarn dev
-# or (recommended way)
+```
+# Or the recommended way
 pnpm dev
 # or
 bun dev
-```
+
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
