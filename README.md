@@ -1,42 +1,48 @@
-[See it live!](https://swisshacks2024.vercel.app/)
+
+[See it live!](https://swisshacks2024.vercel.app/)  
 
 ## Getting Started
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 # To install pnpm globally
+
 npm install -g pnpm
 
 # Verify the installation
+
 pnpm --version
 
-First, install the dependencies:
+# Install Dependencies
 
 ```pnpm install```
 
 Then, run
+
 ```npx prisma generate```
 
-Then, run the development server:
+  
+# Run Development Server
 
 ```bash
-npm run dev
-# or
-yarn dev
+
+npm  run  dev
+
 ```
-# Or the recommended way
+
+## Or the recommended way
+```bash
+
 pnpm dev
-# or
-bun dev
 
+```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.  
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-
-
 # Prisma
+
 When making edits to schema.prisma, rerun this (must stop server and restart it afterwards):
 
 ```npx prisma db push``` Syncs the db's schema in the cloud
@@ -49,4 +55,5 @@ See https://www.prisma.io/docs/orm/prisma-migrate/workflows/prototyping-your-sch
 
 
 Start Prisma Studio with
+
 ```npx prisma studio```
