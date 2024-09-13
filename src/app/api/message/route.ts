@@ -121,7 +121,7 @@ export const POST = async (req: NextRequest) => {
         {
           role: 'user',
           content: `Write a summary of the differences between the two contexts involving the input specified by the user. Write only the conclusion.
-                    Give a response in markdown format. If you don't know the answer, just say that you don't know, don't try to make up an answer.
+                    Give a response in markdown format. If you don't know the answer, just say "I could not find the relevant information. Could you reformulate the query?".
           
                     CONTEXT 1:
                     ${results1.map((r) => r.pageContent).join('\n\n')}
