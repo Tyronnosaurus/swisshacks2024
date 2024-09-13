@@ -116,7 +116,7 @@ export const POST = async (req: NextRequest) => {
     const promptMessages: ChatCompletionMessageParam[]  = [
         {
           role: 'system',
-          content: 'Use the following pieces of context  to answer the users question in markdown format.',
+          content: 'Use the following context to answer the user"s question in markdown format.',
         },
         {
           role: 'user',
