@@ -16,8 +16,14 @@ const nextConfig = {
     },
 
     images: {
-        domains: ['gravatar.com'],
-    },
+        remotePatterns: [
+          {
+            protocol: 'https',
+            hostname: 'gravatar.com',
+            pathname: '**',
+          },
+        ],
+      },
 
     webpack: (config, {buildId, dev, isServer, defaultLoaders, webpack}) => {
     

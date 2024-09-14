@@ -64,7 +64,7 @@ export function constructMetadata(
       },
       icons,
       metadataBase: new URL("https://quill-beta-nine.vercel.app/"),
-      themeColor: "#FFF",
+      // themeColor: "#FFF",
       ...(noIndex && {
         robots: {
           index: false,
